@@ -10,14 +10,9 @@ This codebase was created to demonstrate a fully fledged fullstack application b
 
 For more information on how to this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
 
-
-# How it works
-
-> Describe the general architecture of your app here
-
 # Getting started
 
 You will need Java as a prerequisite and our current build tool of choice is Maven.
-
-> mvn clean install
-
+* Clone this repo
+* Change into the src directory and type `mvn clean install`
+* To start the server, type `mvn liberty:start-server`
