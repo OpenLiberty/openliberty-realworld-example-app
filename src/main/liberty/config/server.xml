@@ -1,0 +1,36 @@
+<server description="Sample Liberty server">
+
+    <featureManager>
+        <feature>microProfile-2.2</feature>
+        <feature>jpa-2.2</feature>
+    </featureManager>
+
+    <httpEndpoint httpPort="${default.http.port}" httpsPort="${default.https.port}"
+                  id="defaultHttpEndpoint" host="*"/>
+    
+    <application name="RealWorld" location="${appLocation}" type="war" context-root="/">
+    </application>
+      
+    <!-- Derby Library Configuration -->
+    <library id="derbyJDBCLib">
+        <fileset dir="${shared.resource.dir}" includes="derby*.jar" />
+    </library>
+
+    <!-- Datasource Configuration -->
+    <dataSource id="RealWorldSource" 
+                jndiName="jdbc/RealWorldSource">
+        <jdbcDriver libraryRef="derbyJDBCLib" />
+        <properties.derby.embedded databaseName="UserDB" createDatabase="create" />
+    </dataSource>
+
+    <cors domain="/api"
+        allowedOrigins="http://localhost:4100"
+        allowedMethods="GET, POST, PUT"
+        allowedHeaders="*"
+        allowCredentials="true"
+        maxAge="3600" />
+
+    <!-- MP JWT configuration -->
+    <mpJwt id="jwtHandler" issuer="https://192.168.1.15:9443/jwt/defaultJWT" />
+
+</server>
