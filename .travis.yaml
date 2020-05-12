@@ -1,0 +1,7 @@
+language: java
+
+build:
+    - mvn clean install
+test:
+    - mvn liberty:start
+    - APIURL=http://localhost:9080/api ./utility/run-api-tests.sh
