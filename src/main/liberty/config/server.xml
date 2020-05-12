@@ -32,7 +32,4 @@
 
     <!-- MP JWT configuration -->
     <mpJwt id="jwtHandler" issuer="https://192.168.1.15:9443/jwt/defaultJWT" authorizationHeaderScheme="Token "/>
-
-    <logging traceSpecification="com.ibm.ws.security.*=all" traceFileName="trace.log" maxFileSize="20" maxFiles="10" />
-
 </server>
