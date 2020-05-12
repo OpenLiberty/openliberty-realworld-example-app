@@ -28,28 +28,27 @@
         <dependency>
             <groupId>org.eclipse.microprofile</groupId>
             <artifactId>microprofile</artifactId>
-            <version>2.2</version>
+            <version>3.0</version>
             <scope>provided</scope>
             <type>pom</type>
         </dependency>
 
-        <!-- OpenLiberty Features -->
         <dependency>
             <groupId>io.openliberty.features</groupId>
             <artifactId>ejbLite-3.2</artifactId>
-            <version>19.0.0.7</version>
+            <version>20.0.0.4</version>
             <type>esa</type>
         </dependency>
         <dependency>
             <groupId>io.openliberty.features</groupId>
             <artifactId>jwt-1.0</artifactId>
-            <version>19.0.0.7</version>
+            <version>20.0.0.4</version>
             <type>esa</type>
         </dependency>
         <dependency>
             <groupId>io.openliberty.features</groupId>
             <artifactId>com.ibm.websphere.appserver.javax.persistence-2.2</artifactId>
-            <version>19.0.0.7</version>
+            <version>20.0.0.4</version>
             <type>esa</type>
         </dependency>
         <dependency>
@@ -72,12 +71,6 @@
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>javax.persistence</artifactId>
             <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
-            <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.derby/derby -->
         <dependency>
@@ -176,7 +169,7 @@
                     <assemblyArtifact>
                         <groupId>io.openliberty</groupId>
                         <artifactId>openliberty-runtime</artifactId>
-                        <version>19.0.0.12</version>
+                        <version>20.0.0.4</version>
                         <type>zip</type>
                     </assemblyArtifact>
                     <configFile>src/main/liberty/config/server.xml</configFile>

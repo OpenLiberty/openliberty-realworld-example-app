@@ -150,17 +150,14 @@ public class Article {
     }
 
     public void update(String title, String description, String body) {
-        if (title != null) {
-            System.out.println("Updating title and slug");
+        if (title != null && ! "".equals(title)) {
             this.title = title;
             this.slug = new Slugify().slugify(title);
         }
-        if (description != null) {
-            System.out.println("Updating description");
+        if (description != null && ! "".equals(description)) {
             this.description = description;
         }
-        if (body != null) {
-            System.out.println("Updating article body");
+        if (body != null && ! "".equals(body)) {
             this.body = body;
         }
     }

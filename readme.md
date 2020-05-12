@@ -14,5 +14,6 @@ For more information on how to this works with other frontends/backends, head ov
 
 You will need Java as a prerequisite and our current build tool of choice is Maven.
 * Clone this repo
-* Change into the src directory and type `mvn clean install`
-* To start the server, type `mvn liberty:start-server`
+* To build, run `mvn clean install`
+* To start the server, run `mvn liberty:start`
+* To start the server as a foreground process, run `mvn liberty:run`

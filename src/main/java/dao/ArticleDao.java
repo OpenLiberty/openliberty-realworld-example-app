@@ -44,6 +44,8 @@ public class ArticleDao {
         em.remove(article);
     }
 
+    @SuppressWarnings("unchecked")
+    // Compiler will complain about type safety. As long as tagList is List<String>
     public List<String> getTags() {
         List<List<String>> tagListList = em.createQuery("SELECT a.tagList FROM Article a").getResultList();
         List<String> tags = tagListList.stream().flatMap(tagList -> tagList.stream()).distinct().collect(Collectors.toList());

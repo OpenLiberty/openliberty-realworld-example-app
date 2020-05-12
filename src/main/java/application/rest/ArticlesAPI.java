@@ -53,7 +53,6 @@ public class ArticlesAPI {
     /* List Articles */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
     @PermitAll
     public Response listArticles(
             @QueryParam("tag") String tag, 
@@ -71,7 +70,6 @@ public class ArticlesAPI {
     @GET
     @Path("/feed")
     @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
     public Response feedArticles(            
             @QueryParam("limit") @DefaultValue("20") int limit, 
             @QueryParam("offset") @DefaultValue("0") int offset
@@ -85,7 +83,6 @@ public class ArticlesAPI {
     @GET
     @Path("/{slug}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
     @PermitAll
     public Response getArticle(
             @PathParam("slug") String slug,

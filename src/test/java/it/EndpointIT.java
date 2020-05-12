@@ -23,7 +23,7 @@ public class EndpointIT {
 
         assertEquals("Health status code unexpected for " + baseURL + "/health.", Response.Status.OK.getStatusCode(), response.getStatus());
         String json = response.readEntity(String.class);
-        assertTrue("Health message did not find outcome up in the response: " + json, json.contains("\"outcome\":\"UP\""));
+        assertTrue("Health message did not find outcome up in the response: " + json, json.contains("\"status\":\"UP\""));
         response.close();
     }
 
@@ -41,23 +41,4 @@ public class EndpointIT {
         assertEquals("Returned list should be empty", emptyArticles.toString(), json);
         response.close();
     }
-
-    // @Test
-    // public void createUser() {
-    //     Client client = ClientBuilder.newClient();
-
-    //     WebTarget target = client.target(baseURL + "/api/users");
-
-    //     CreateUser testRequestBody = new CreateUser();
-    //     User testUser = new User();
-    //     testUser.setEmail("johnnyjoestar@ibm.com");
-    //     testUser.setPassword("password");
-    //     testUser.setUsername("Johnny");
-    //     testRequestBody.setUser(testUser);
-
-    //     Response response = target.request(MediaType.APPLICATION_JSON).post(Entity.json(testRequestBody));
-
-    //     assertEquals("Did not retrieve 200 from " + baseURL + "/api/users.", Response.Status.CREATED.getStatusCode(), response.getStatus());
-    //     response.close();
-    // }
 }
