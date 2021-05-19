@@ -1,6 +1,7 @@
 package application.rest;
 
 import javax.enterprise.context.ApplicationScoped;
+
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 

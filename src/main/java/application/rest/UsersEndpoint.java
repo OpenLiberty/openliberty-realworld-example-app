@@ -1,5 +1,7 @@
 package application.rest;
 
+import java.util.Collections;
+
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -14,6 +16,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.json.JSONException;
+
 import com.ibm.websphere.security.jwt.InvalidBuilderException;
 import com.ibm.websphere.security.jwt.InvalidClaimException;
 import com.ibm.websphere.security.jwt.InvalidConsumerException;
@@ -21,11 +33,8 @@ import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.JwtException;
 import com.ibm.websphere.security.jwt.KeyException;
 
-import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import application.errors.ValidationMessages;
+//import application.rest.api.UsersAPI;
 import core.user.CreateUser;
 import core.user.User;
 import dao.UserDao;
@@ -34,7 +43,7 @@ import security.JwtGenerator;
 @RequestScoped
 @Path("/")
 @RolesAllowed("users")
-public class UsersAPI {
+public class UsersEndpoint {
     private JwtGenerator tknGenerator = new JwtGenerator();
 
     @Inject
@@ -50,6 +59,10 @@ public class UsersAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
+    @Tag(ref = "Login")
+    @Operation(summary = "Create a new User", description = "Enter a unique username and email")
+    @RequestBody(content = @Content(examples = @ExampleObject(ref = "User_registration")))
+    @APIResponse(responseCode = "200", description = "New User created", content = @Content(examples = @ExampleObject(ref = "User_returned")))
     public Response createUser(CreateUser requestBody)
             throws JSONException, JwtException, InvalidBuilderException, InvalidClaimException, KeyException {
         User user = requestBody.getUser();
@@ -84,8 +97,13 @@ public class UsersAPI {
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(ref = "Login")
+    @Operation(summary = "Login as an existing User", description = "Enter a valid username and email")
+    @RequestBody(content = @Content(examples = @ExampleObject(ref = "User_authentication")))
+    @APIResponse(responseCode = "200", description = "User logged in", content = @Content(examples = @ExampleObject(ref = "User_returned")))
     public Response loginUser(CreateUser requestBody)
             throws JSONException, JwtException, InvalidBuilderException, InvalidClaimException, KeyException {
+
         User loginInfo = requestBody.getUser();
         String email = loginInfo.getEmail();
         String password = loginInfo.getPassword();
@@ -117,6 +135,10 @@ public class UsersAPI {
     @Path("/user")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(ref = "User")
+    @SecurityRequirement(name = "Authentication")
+    @Operation(summary = "Get Current User", description = "Returns a User that's the current user")
+    @APIResponse(responseCode = "200", description = "Current User retrieved", content = @Content(examples = @ExampleObject(ref = "User_returned")))
     public Response getCurrent() throws InvalidTokenException, InvalidConsumerException, JSONException, JwtException,
             InvalidBuilderException, InvalidClaimException, KeyException {
         Long userId = (jwt == null) ? null : jwt.getClaim("id");
@@ -135,6 +157,11 @@ public class UsersAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
+    @Tag(ref = "User")
+    @SecurityRequirement(name = "Authentication")
+    @Operation(summary = "Update User", description = "Returns the updated User. Accepted fields: email, username, password, image, bio")
+    @RequestBody(content = @Content(examples = @ExampleObject(ref = "User_update")))
+    @APIResponse(responseCode = "200", description = "Current User updated", content = @Content(examples = @ExampleObject(ref = "User_updated_returned")))
     public Response update(CreateUser requestBody)
             throws JSONException, JwtException, InvalidBuilderException, InvalidClaimException, KeyException {
         Long userId = (jwt == null) ? null : jwt.getClaim("id");
@@ -144,7 +171,7 @@ public class UsersAPI {
                 .entity(ValidationMessages.throwError(ValidationMessages.USER_NOT_FOUND))
                 .build();
         }
-        if (!userId.equals(currentUser.getId())) {
+        if (!userId.equals(currentUser.getUserID())) {
             return Response.status(Response.Status.NOT_FOUND)
                 .entity(ValidationMessages.throwError(ValidationMessages.UPDATING_DIFFERENT_USER))
                 .build();
@@ -161,15 +188,8 @@ public class UsersAPI {
                 .entity(ValidationMessages.throwError(ValidationMessages.USER_NOT_FOUND))
                 .build();
         }
-        JSONObject responseBody = new JSONObject().put("user", 
-            user.toJson().put("token", generateToken(user.getUsername(), user.getId())));
-        return Response.ok(responseBody.toString())
-            .build();
-    }
 
-    private String generateToken(String username, Long userId)
-            throws JSONException, JwtException, InvalidBuilderException, InvalidClaimException, KeyException {
-        return tknGenerator.getToken(username, userId);
+        return Response.ok(Collections.singletonMap("user", user)).build();
     }
 
 }

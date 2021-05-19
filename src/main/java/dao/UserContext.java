@@ -8,8 +8,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.json.JSONObject;
-
 import core.article.Article;
 import core.user.Profile;
 import core.user.User;
@@ -46,23 +44,26 @@ public class UserContext {
         }
     }
 
-    public JSONObject findProfileByUsernameJson(Long userId, String username) {
+    public Profile findProfileByUsername(Long userId, String username) {
         User currentUser = userDao.findUser(userId);
         Profile profile = userDao.findProfile(username);
         if (profile == null) return null;
-        return new JSONObject().put("profile", profile.toJson(currentUser));
+        profile.setFollowing(currentUser);
+        return profile;
     }
 
-    public JSONObject findArticleJson(Long userId, String slug) {
+    public Article findArticle(Long userId, String slug) {
         User currentUser = userDao.findUser(userId);
         Article article = articleDao.findArticle(slug);
-        return new JSONObject().put("article", article.toJson(currentUser));
+        if (article == null) return null;
+        setFollowingFavourited(currentUser, article);
+        return article;
     }
 
-    public List<JSONObject> filterArticles(Long userId, String tag, String author, String favorited, int limit, int offset) {
+    public List<Article> filterArticles(Long userId, String tag, String author, String favorited, int limit, int offset) {
         User currentUser = userDao.findUser(userId);
         List<Article> articles = em.createQuery("SELECT a FROM Article a ORDER BY a.updatedAt DESC", Article.class)
-                .setMaxResults(limit).getResultList();
+                .getResultList();
 
         // If any filter is provided, we filter the list
         if (tag != null || author != null || favorited != null) {
@@ -70,26 +71,32 @@ public class UserContext {
             // Filter in one iteration for tag, author, and favorited
             // For each parameter, accept if param is null or satisfies condition
             articles = articles.stream().filter(a -> 
-                (tag == null || a.getTags().contains(tag)) && 
+                (tag == null || a.getTagList().contains(tag)) && 
                 (author == null || a.getAuthor().getUsername().equals(author)) && 
                 (favorited == null || (profile == null ? false : profile.checkFavorited(a)))).collect(Collectors.toList());
         }
-        return articles.stream()
-            .map(a -> a.toJson(currentUser)).skip(offset).collect(Collectors.toList());
+        List<Article> articlesFiletered = articles.stream().skip(offset).limit(limit).collect(Collectors.toList());
+
+        // Set if followed and favourited by the current user
+        setFollowingFavourited(currentUser, articlesFiletered);
+        
+        return articles;
     }
 
-    public List<JSONObject> grabFeed(Long userId, int limit, int offset) {
+    public List<Article> grabFeed(Long userId, int limit, int offset) {
         User currentUser = userDao.findUser(userId);
         List<Article> articles = em.createQuery("SELECT a FROM Article a ORDER BY a.updatedAt DESC", Article.class)
-                .setMaxResults(limit).getResultList();
+                .getResultList();
+        
+        List<Article> articlesFiletered = articles.stream().skip(offset).limit(limit).collect(Collectors.toList());
 
-        // Filter down articles followed by the current user
-        return articles.stream()
-            .filter(a -> a.getAuthor().checkFollowedBy(currentUser))
-            .map(a -> a.toJson(currentUser)).skip(offset).collect(Collectors.toList());
+        // Set if followed by the current user
+        setFollowingFavourited(currentUser, articlesFiletered);
+        
+        return articles;
     }
 
-    public JSONObject favoriteArticleJson(Long userId, String slug) {
+    public Article favoriteArticleJson(Long userId, String slug) {
         User currentUser = userDao.findUser(userId);
         Article article = articleDao.findArticle(slug);
         if (article == null) return null;
@@ -99,10 +106,11 @@ public class UserContext {
             currentUser.favorite(article);
             article.upFavoritesCount();
         }
-        return new JSONObject().put("article", article.toJson(currentUser));
+        setFollowingFavourited(currentUser, article);
+        return article;
     }
 
-    public JSONObject unfavoriteArticleJson(Long userId, String slug) {
+    public Article unfavoriteArticleJson(Long userId, String slug) {
         User currentUser = userDao.findUser(userId);
         Article article = articleDao.findArticle(slug);
         if (article == null) return null;
@@ -112,6 +120,18 @@ public class UserContext {
             currentUser.unfavorite(article);
             article.downFavoritesCount();
         }
-        return new JSONObject().put("article", article.toJson(currentUser));
+        setFollowingFavourited(currentUser, article);
+        return article;
     }
+    
+   private void setFollowingFavourited(User currentUser, Article article) {
+       article.getAuthor().setFollowing(currentUser);
+       article.setFavorited(currentUser);
+   }
+   
+   private void setFollowingFavourited(User currentUser, List<Article> articles) {
+       articles.forEach(a -> {
+           setFollowingFavourited(currentUser, a);
+       });
+   }
 }

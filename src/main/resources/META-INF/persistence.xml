@@ -11,6 +11,7 @@
             <property name="eclipselink.ddl-generation" value="create-tables"/>
             <property name="eclipselink.ddl-generation.output-mode" value="both" />
             <property name="eclipselink.platform.class.name" value="org.eclipse.persistence.platform.database.DerbyPlatform"/>
+            <property name="eclipselink.jdbc.sql-cast" value="true"/> <!-- This property allows the null checks in the @NamedQuery's, but using provider specific persistence properties is non-portable and may have unintended consequences -->
         </properties>
     </persistence-unit>
 </persistence>

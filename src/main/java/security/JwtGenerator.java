@@ -9,7 +9,7 @@ import com.ibm.websphere.security.jwt.KeyException;
 
 public class JwtGenerator {
 
-    public String getToken(String newUser, Long userId)
+    public static String getToken(String newUser, Long userId)
         throws JwtException, InvalidBuilderException, InvalidClaimException, KeyException {
 
         // 1. Create a JWTBuilder Object.

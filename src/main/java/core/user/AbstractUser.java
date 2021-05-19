@@ -3,6 +3,8 @@ package core.user;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.json.bind.annotation.JsonbNillable;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -17,25 +19,29 @@ import javax.persistence.OneToMany;
 import core.article.Article;
 
 @MappedSuperclass
+@JsonbNillable
 public abstract class AbstractUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "USER_ID")
-    private Long USER_ID;
+    @JsonbTransient
+    private Long userID;
 
     @ManyToMany
     @JoinTable(name = "FOLLOWED_BY",
         joinColumns = { @JoinColumn(name = "celeb", referencedColumnName = "USER_ID") },
         inverseJoinColumns = { @JoinColumn(name = "follower", referencedColumnName = "USER_ID")})
+    @JsonbTransient
     private Set<User> followedBy = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "favorited")
+    @JsonbTransient
     private Set<Article> favorited = new HashSet<>();
 
     @Column(name = "email", nullable = false, unique = true)
-    private String email;
+    protected String email;
     @Column(name = "username", nullable = false, unique = true)
     private String username;
     @Column(name = "userPassword", nullable = false)
@@ -45,8 +51,8 @@ public abstract class AbstractUser {
     @Column(name = "image", nullable = true)
     private String image;
 
-    public Long getId() {
-        return USER_ID;
+    public Long getUserID() {
+        return userID;
     }
 
     public String getEmail() {
@@ -65,6 +71,7 @@ public abstract class AbstractUser {
         this.username = username;
     }
 
+    @JsonbTransient
     public String getPassword() {
         return password;
     }
@@ -81,11 +88,11 @@ public abstract class AbstractUser {
         this.bio = bio;
     }
 
-    public String getImg() {
+    public String getImage() {
         return image;
     }
 
-    public void setImg(String image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,10 +15,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.github.slugify.Slugify;
-
-import org.json.JSONObject;
 
 import core.comments.Comment;
 import core.user.Profile;
@@ -29,10 +29,12 @@ public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ARTICLE_ID")
+    @JsonbTransient
     private Long ARTICLE_ID;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "comments")
+    @JsonbTransient
     private List<Comment> comments;
 
     @Column(name = "slug")
@@ -97,11 +99,11 @@ public class Article {
         this.body = body;
     }
 
-    public List<String> getTags() {
+    public List<String> getTagList() {
         return tagList;
     }
 
-    public void setTags(List<String> tagList) {
+    public void setTagList(List<String> tagList) {
         this.tagList = tagList;
     }
 
@@ -148,6 +150,17 @@ public class Article {
     public void removeComment(Comment comment) {
         this.comments.remove(comment);
     }
+    
+    @Transient
+    private boolean favorited = false;
+    
+    public boolean getFavorited() {
+        return favorited;
+    }
+    
+    public void setFavorited(User userContext) {
+        favorited = userContext == null ? false : userContext.checkFavorited(this);
+    }
 
     public void update(String title, String description, String body) {
         if (title != null && ! "".equals(title)) {
@@ -162,16 +175,4 @@ public class Article {
         }
     }
 
-    public JSONObject toJson(User currentUser) {
-        return new JSONObject()
-            .put("slug", slug == null ? JSONObject.NULL : slug).put("title", title)
-            .put("description", description)
-            .put("body", body)
-            .put("tagList", tagList == null ? JSONObject.NULL : tagList)
-            .put("createdAt", createdAt.toInstant())
-            .put("updatedAt", updatedAt.toInstant())
-            .put("favoritesCount", favoritesCount)
-            .put("favorited", currentUser == null ? false : currentUser.checkFavorited(this))
-            .put("author", author == null ? JSONObject.NULL : author.toJson(currentUser));
-    }
 }

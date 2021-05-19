@@ -12,18 +12,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.json.JSONObject;
-
 import core.user.Profile;
-import core.user.User;
 
 @Entity(name = "Comment")
 @Table(name = "Comment_Table")
 public class Comment {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "COMMENT_ID")
-    private Long ARTICLE_ID;
+    private Long id;
 
     @Column(name = "createdAt")
     private Timestamp createdAt;
@@ -42,7 +40,15 @@ public class Comment {
     }
 
     public Long getId() {
-        return ARTICLE_ID;
+        return id;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
     }
     
     public Instant getCreatedAt() {
@@ -73,12 +79,4 @@ public class Comment {
         this.author = author;
     }
 
-    public JSONObject toJson(User userContext) {
-        return new JSONObject()
-            .put("id", ARTICLE_ID)
-            .put("createdAt", createdAt.toInstant())
-            .put("updatedAt", updatedAt.toInstant())
-            .put("body", body)
-            .put("author", author.toJson(userContext));
-    }
 }

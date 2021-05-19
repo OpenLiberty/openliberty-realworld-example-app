@@ -23,8 +23,8 @@
         <properties.derby.embedded databaseName="UserDB" createDatabase="create" />
     </dataSource>
 
-    <cors domain="/api"
-        allowedOrigins="http://localhost:4100"
+    <cors domain="/"
+        allowedOrigins="http://localhost:4100, http://localhost:9080"
         allowedMethods="GET, POST, PUT"
         allowedHeaders="*"
         allowCredentials="true"
