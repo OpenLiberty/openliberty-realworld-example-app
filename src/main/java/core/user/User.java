@@ -3,25 +3,19 @@ package core.user;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.json.JSONObject;
+import com.ibm.websphere.security.jwt.InvalidBuilderException;
+import com.ibm.websphere.security.jwt.InvalidClaimException;
+import com.ibm.websphere.security.jwt.JwtException;
+import com.ibm.websphere.security.jwt.KeyException;
 
-import core.user.AbstractUser;
+import security.JwtGenerator;
 
 @Entity(name = "User")
 @Table(name = "USER_TABLE")
 public class User extends AbstractUser {
 
-    public JSONObject toJson() {
-        String email = this.getEmail();
-        String username = this.getUsername();
-        String bio = this.getBio();
-        String image = this.getImg();
-
-        return new JSONObject()
-            .put("email", email)
-            .put("username", username)
-            .put("bio", bio == null ? JSONObject.NULL : bio)
-            .put("image", image == null ? JSONObject.NULL : image);
-            // JWT is provided at API
+    public String getToken() throws JwtException, InvalidBuilderException, InvalidClaimException, KeyException {
+        return JwtGenerator.getToken(this.getUsername(), this.getUserID());
     }
+
 }

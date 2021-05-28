@@ -1,7 +1,7 @@
 <server description="Sample Liberty server">
 
     <featureManager>
-        <feature>microProfile-3.0</feature>
+        <feature>microProfile-4.0</feature>
         <feature>jpa-2.2</feature>
     </featureManager>
 
@@ -23,8 +23,8 @@
         <properties.derby.embedded databaseName="UserDB" createDatabase="create" />
     </dataSource>
 
-    <cors domain="/api"
-        allowedOrigins="http://localhost:4100"
+    <cors domain="/"
+        allowedOrigins="http://localhost:4100, http://localhost:9080"
         allowedMethods="GET, POST, PUT"
         allowedHeaders="*"
         allowCredentials="true"

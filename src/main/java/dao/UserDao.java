@@ -32,7 +32,7 @@ public class UserDao {
             newUser.getEmail(), 
             newUser.getUsername(), 
             newUser.getPassword(), 
-            newUser.getImg(), 
+            newUser.getImage(), 
             newUser.getBio());
         return em.merge(user);
     }
@@ -64,13 +64,13 @@ public class UserDao {
 
     // JPA count returns type Long
     public boolean userExists(String username) {
-        return (Long) em.createQuery("SELECT COUNT(u.USER_ID) FROM User u WHERE u.username = :username")
+        return (Long) em.createQuery("SELECT COUNT(u.userID) FROM User u WHERE u.username = :username")
                 .setParameter("username", username)
                 .getSingleResult() > 0;
     }
 
     public boolean emailExists(String email) {
-        return (Long) em.createQuery("SELECT COUNT(u.USER_ID) FROM User u WHERE u.email = :email")
+        return (Long) em.createQuery("SELECT COUNT(u.userID) FROM User u WHERE u.email = :email")
                 .setParameter("email", email)
                 .getSingleResult() > 0;
     }
