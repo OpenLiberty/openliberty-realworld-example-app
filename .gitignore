@@ -18,3 +18,5 @@ Thumbs.db
 
 #Build
 target/
+/openliberty-realworld-example-app.iml
+/realworld-liberty.iml
