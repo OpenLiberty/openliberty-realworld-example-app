@@ -3,13 +3,6 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>net.wasdev.wlp.maven.parent</groupId>
-        <artifactId>liberty-maven-app-parent</artifactId>
-        <version>2.7</version>
-        <relativePath/>
-    </parent>
-
     <properties>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.source>17</maven.compiler.source>
@@ -25,31 +18,13 @@
     <packaging>war</packaging>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.eclipse.microprofile/microprofile -->
         <dependency>
             <groupId>org.eclipse.microprofile</groupId>
             <artifactId>microprofile</artifactId>
-            <version>3.0</version>
-            <scope>provided</scope>
+            <version>6.0</version>
             <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>io.openliberty.features</groupId>
-            <artifactId>ejbLite-3.2</artifactId>
-            <version>20.0.0.4</version>
-            <type>esa</type>
-        </dependency>
-        <dependency>
-            <groupId>io.openliberty.features</groupId>
-            <artifactId>jwt-1.0</artifactId>
-            <version>20.0.0.4</version>
-            <type>esa</type>
-        </dependency>
-        <dependency>
-            <groupId>io.openliberty.features</groupId>
-            <artifactId>com.ibm.websphere.appserver.javax.persistence-2.2</artifactId>
-            <version>20.0.0.4</version>
-            <type>esa</type>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.slugify</groupId>
@@ -57,22 +32,10 @@
             <version>2.4</version>
         </dependency>
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <version>2.0.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20160810</version>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>javax.persistence</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.derby/derby -->
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
@@ -83,7 +46,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.media/jersey-media-json-jackson -->
@@ -162,24 +125,11 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>net.wasdev.wlp.maven.plugins</groupId>
+                <groupId>io.openliberty.tools</groupId>
                 <artifactId>liberty-maven-plugin</artifactId>
-                <version>2.7</version>
+                <version>3.8.2</version>
                 <configuration>
-                    <assemblyArtifact>
-                        <groupId>io.openliberty</groupId>
-                        <artifactId>openliberty-runtime</artifactId>
-                        <version>20.0.0.4</version>
-                        <type>zip</type>
-                    </assemblyArtifact>
-                    <configFile>src/main/liberty/config/server.xml</configFile>
-                    <include>${packaging.type}</include>
-                    <bootstrapProperties>
-                        <appContext>${warContext}</appContext>
-                        <default.http.port>${testServerHttpPort}</default.http.port>
-                        <default.https.port>${testServerHttpsPort}</default.https.port>
-                        <appLocation>${project.artifactId}-${project.version}.war</appLocation>
-                    </bootstrapProperties>
+                    <serverName>guideServer</serverName>
                 </configuration>
             </plugin>
             <!-- Plugin to run functional tests -->
