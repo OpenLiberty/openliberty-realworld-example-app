@@ -1,19 +1,19 @@
 package org.example.realworldapi.infrastructure.provider;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.example.realworldapi.domain.model.provider.HashProvider;
-import org.mindrot.jbcrypt.BCrypt;
 
 @ApplicationScoped
 public class BCryptHashProvider implements HashProvider {
 
-  @Override
-  public String hashPassword(String password) {
-    return BCrypt.hashpw(password, BCrypt.gensalt());
-  }
+    @Override
+    public String hashPassword(String password) {
+        return BCrypt.withDefaults().hashToString(12, password.toCharArray());
+    }
 
-  @Override
-  public boolean checkPassword(String plaintext, String hashed) {
-    return BCrypt.checkpw(plaintext, hashed);
-  }
+    @Override
+    public boolean checkPassword(String plaintext, String hashed) {
+        return BCrypt.verifyer().verify(plaintext.toCharArray(), hashed).verified;
+    }
 }
