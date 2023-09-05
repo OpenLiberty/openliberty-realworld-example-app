@@ -1,7 +1,6 @@
 package org.example.realworldapi.application.web.model.request;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -16,7 +15,6 @@ import java.util.UUID;
 @Setter
 @JsonRootName("user")
 @AtLeastOneFieldMustBeNotNull
-@RegisterForReflection
 public class UpdateUserRequest {
 
     @Pattern(regexp = "\\A(?!\\s*\\Z).+", message = ValidationMessages.USERNAME_MUST_BE_NOT_BLANK)
