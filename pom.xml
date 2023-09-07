@@ -48,7 +48,7 @@
         <dependency>
             <groupId>io.openliberty.features</groupId>
             <artifactId>com.ibm.websphere.appserver.javax.persistence-2.2</artifactId>
-            <version>20.0.0.4</version>
+            <version>20.0.0.12</version>
             <type>esa</type>
         </dependency>
         <dependency>
