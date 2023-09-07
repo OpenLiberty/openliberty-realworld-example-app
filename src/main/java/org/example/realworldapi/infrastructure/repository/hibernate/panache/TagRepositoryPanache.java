@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @ApplicationScoped
 @AllArgsConstructor
-public class TagRepositoryPanache extends AbstractPanacheRepository<TagEntity, UUID>
+public class TagRepositoryPanache extends AbstractDAO<TagEntity, UUID>
     implements TagRepository {
 
   private final EntityUtils entityUtils;

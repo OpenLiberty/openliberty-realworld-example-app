@@ -18,7 +18,7 @@ import static io.quarkus.panache.common.Parameters.with;
 
 @ApplicationScoped
 @AllArgsConstructor
-public class CommentRepositoryPanache extends AbstractPanacheRepository<CommentEntity, UUID>
+public class CommentRepositoryPanache extends AbstractDAO<CommentEntity, UUID>
     implements CommentRepository {
 
   private final EntityUtils entityUtils;

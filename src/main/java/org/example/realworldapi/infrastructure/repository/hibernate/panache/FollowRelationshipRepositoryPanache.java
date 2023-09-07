@@ -17,7 +17,7 @@ import java.util.UUID;
 @ApplicationScoped
 @AllArgsConstructor
 public class FollowRelationshipRepositoryPanache
-    extends AbstractPanacheRepository<FollowRelationshipEntity, FollowRelationshipEntityKey>
+    extends AbstractDAO<FollowRelationshipEntity, FollowRelationshipEntityKey>
     implements FollowRelationshipRepository {
 
   private final EntityUtils entityUtils;

@@ -14,19 +14,19 @@ import static io.quarkus.panache.common.Parameters.with;
 
 @ApplicationScoped
 @AllArgsConstructor
-public class UserRepositoryPanache extends AbstractPanacheRepository<UserEntity, UUID>
+public class UserRepositoryPanache extends AbstractDAO<UserEntity, UUID>
     implements UserRepository {
 
   private final EntityUtils entityUtils;
 
   @Override
   public void save(User user) {
-    persist(new UserEntity(user));
+    em.persist(new UserEntity(user));
   }
 
   @Override
   public boolean existsBy(String field, String value) {
-    return count("upper(" + field + ")", value.toUpperCase().trim()) > 0;
+    return em.count("upper(" + field + ")", value.toUpperCase().trim()) > 0;
   }
 
   @Override

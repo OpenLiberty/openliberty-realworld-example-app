@@ -17,7 +17,7 @@ import static io.quarkus.panache.common.Parameters.with;
 @ApplicationScoped
 @AllArgsConstructor
 public class FavoriteRelationshipRepositoryPanache
-    extends AbstractPanacheRepository<FavoriteRelationshipEntity, FavoriteRelationshipEntityKey>
+    extends AbstractDAO<FavoriteRelationshipEntity, FavoriteRelationshipEntityKey>
     implements FavoriteRelationshipRepository {
 
   private final EntityUtils entityUtils;

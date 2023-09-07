@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 @AllArgsConstructor
 public class TagRelationshipRepositoryPanache
-    extends AbstractPanacheRepository<TagRelationshipEntity, TagRelationshipEntityKey>
+    extends AbstractDAO<TagRelationshipEntity, TagRelationshipEntityKey>
     implements TagRelationshipRepository {
 
   private final EntityUtils entityUtils;
