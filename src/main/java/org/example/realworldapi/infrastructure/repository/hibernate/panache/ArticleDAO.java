@@ -27,7 +27,12 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
 
     @Override
     public boolean existsBySlug(String slug) {
-        return count("upper(slug)", slug.toUpperCase().trim()) > 0;
+        String jpql = "SELECT a FROM Article a WHERE UPPER(a.slug) = :slug";
+        TypedQuery<ArticleEntity> query = em.createQuery(jpql, ArticleEntity.class);
+        query.setParameter("slug", slug.toUpperCase().trim());
+
+        List<ArticleEntity> resultList = query.getResultList();
+        return !resultList.isEmpty();
     }
 
     @Override
@@ -74,7 +79,8 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
 
     @Override
     public void delete(Article article) {
-        deleteById(article.getId());
+        em.remove(article);
+//        deleteById(article.getId());
     }
 
     @Override
