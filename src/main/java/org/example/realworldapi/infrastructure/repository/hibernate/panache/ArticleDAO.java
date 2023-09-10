@@ -24,10 +24,9 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
 
     private final EntityUtils entityUtils;
 
-
     @Override
     public boolean existsBySlug(String slug) {
-        String jpql = "SELECT a FROM Article a WHERE UPPER(a.slug) = :slug";
+        String jpql = "SELECT a FROM ArticleEntity a WHERE UPPER(a.slug) = :slug";
         TypedQuery<ArticleEntity> query = em.createQuery(jpql, ArticleEntity.class);
         query.setParameter("slug", slug.toUpperCase().trim());
 
@@ -38,18 +37,25 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
     @Override
     public void save(Article article) {
         final var author = findUserEntityById(article.getAuthor().getId());
-        em.persistAndFlush(new ArticleEntity(article, author));
+        em.persist(new ArticleEntity(article, author));
+        em.flush();
     }
 
     @Override
     public Optional<Article> findArticleById(UUID id) {
-        return em.findByIdOptional(id).map(entityUtils::article);
+        ArticleEntity a = findArticleEntityById(id);
+        if (a != null) {
+            Article art = entityUtils.article(a);
+            return Optional.of(art);
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
     public Optional<Article> findBySlug(String slug) {
 
-        String jpql = "SELECT a FROM Article a WHERE UPPER(a.slug) = :slug";
+        String jpql = "SELECT a FROM ArticleEntity a WHERE UPPER(a.slug) = :slug";
         TypedQuery<ArticleEntity> query = em.createQuery(jpql, ArticleEntity.class);
         query.setParameter("slug", slug.toUpperCase().trim());
 
@@ -70,17 +76,24 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
 
     @Override
     public Optional<Article> findByAuthorAndSlug(UUID authorId, String slug) {
-        return find(
-                "author.id = :authorId and upper(slug) = :slug",
-                Parameters.with("authorId", authorId).and("slug", slug.toUpperCase().trim()))
-                .firstResultOptional()
-                .map(entityUtils::article);
+        String jpql = "SELECT a FROM ArticleEntity a WHERE UPPER(a.slug) = :slug and author.id = :authorId";
+        TypedQuery<ArticleEntity> query = em.createQuery(jpql, ArticleEntity.class);
+        query.setParameter("slug", slug.toUpperCase().trim());
+        query.setParameter("authorId", authorId);
+
+        List<ArticleEntity> resultList = query.getResultList();
+        if (!resultList.isEmpty()) {
+            Article article = entityUtils.article(resultList.get(0));
+            return Optional.of(article);
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
     public void delete(Article article) {
-        em.remove(article);
-//        deleteById(article.getId());
+        final var articleEntity = findArticleEntityById(article.getId());
+        em.remove(articleEntity);
     }
 
     @Override
@@ -122,6 +135,16 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
         return new PageResult<>(articlesResult, total);
     }
 
+    public long count(UUID loggedUserId) {
+//        TODO fix this query
+        String jpql = "from ArticleEntity as articles inner join articles.author as author inner join author.followedBy as followedBy where followedBy.user.id = :loggedUserId";
+        TypedQuery<ArticleEntity> query = em.createQuery(jpql, ArticleEntity.class);
+        query.setParameter("loggedUserId", loggedUserId);
+
+        List<ArticleEntity> resultList = query.getResultList();
+        return resultList.size();
+    }
+
     @Override
     public long count(List<String> tags, List<String> authors, List<String> favorited) {
         Map<String, Object> params = new LinkedHashMap<>();
@@ -130,12 +153,6 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
         configFilterFindArticlesQueryBuilder(
                 countArticlesQueryBuilder, tags, authors, favorited, params);
         return count(countArticlesQueryBuilder.toQueryString(), params);
-    }
-
-    public long count(UUID loggedUserId) {
-        return count(
-                "from ArticleEntity as articles inner join articles.author as author inner join author.followedBy as followedBy where followedBy.user.id = :loggedUserId",
-                Parameters.with("loggedUserId", loggedUserId));
     }
 
     private void configFilterFindArticlesQueryBuilder(
