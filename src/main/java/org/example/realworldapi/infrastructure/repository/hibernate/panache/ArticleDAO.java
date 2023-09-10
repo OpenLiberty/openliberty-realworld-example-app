@@ -1,9 +1,9 @@
 package org.example.realworldapi.infrastructure.repository.hibernate.panache;
 
 import io.quarkus.panache.common.Page;
-import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import lombok.AllArgsConstructor;
 import org.example.realworldapi.domain.model.article.Article;
@@ -98,17 +98,49 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
 
     @Override
     public PageResult<Article> findMostRecentArticlesByFilter(ArticleFilter articleFilter) {
-        final var articlesEntity =
-                find(
-                        "select articles from ArticleEntity as articles inner join articles.author as author inner join author.followedBy as followedBy where followedBy.user.id = :loggedUserId",
-                        Sort.descending("createdAt").and("updatedAt").descending(),
-                        Parameters.with("loggedUserId", articleFilter.getLoggedUserId()))
-                        .page(Page.of(articleFilter.getOffset(), articleFilter.getLimit()))
-                        .list();
-        final var articlesResult =
-                articlesEntity.stream().map(entityUtils::article).collect(Collectors.toList());
-        final var total = count(articleFilter.getLoggedUserId());
+        String jpql = "SELECT a FROM ArticleEntity a " +
+                "JOIN a.author author " +
+                "JOIN author.followedBy followedBy " +
+                "WHERE followedBy.user.id = :loggedUserId " +
+                "ORDER BY a.createdAt DESC, a.updatedAt DESC";
+
+        // Create the query and set parameters
+        Query query = em.createQuery(jpql);
+        query.setParameter("loggedUserId", articleFilter.getLoggedUserId());
+
+        // Handle paging
+        int offset = articleFilter.getOffset();
+        int limit = articleFilter.getLimit();
+        query.setFirstResult(offset);
+        query.setMaxResults(limit);
+
+        // Execute the query and fetch the results
+        List<ArticleEntity> articlesEntity = query.getResultList();
+
+        // Map the results to Article objects
+        List<Article> articlesResult = articlesEntity.stream()
+                .map(entityUtils::article)
+                .collect(Collectors.toList());
+
+        // Calculate the total count (you can create a separate method for this)
+        long total = countTotalArticles(articleFilter.getLoggedUserId());
+
         return new PageResult<>(articlesResult, total);
+    }
+
+    private long countTotalArticles(UUID loggedUserId) {
+        // Create a count query
+        String countJpql = "SELECT COUNT(a) FROM ArticleEntity a " +
+                "JOIN a.author author " +
+                "JOIN author.followedBy followedBy " +
+                "WHERE followedBy.user.id = :loggedUserId";
+
+        // Create the query and set parameters
+        Query countQuery = em.createQuery(countJpql);
+        countQuery.setParameter("loggedUserId", loggedUserId);
+
+        // Execute the count query
+        return (long) countQuery.getSingleResult();
     }
 
     @Override

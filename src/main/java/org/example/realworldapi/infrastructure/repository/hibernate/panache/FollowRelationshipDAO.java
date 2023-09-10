@@ -1,7 +1,7 @@
 package org.example.realworldapi.infrastructure.repository.hibernate.panache;
 
-import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.TypedQuery;
 import lombok.AllArgsConstructor;
 import org.example.realworldapi.domain.model.user.FollowRelationship;
 import org.example.realworldapi.domain.model.user.FollowRelationshipRepository;
@@ -11,23 +11,26 @@ import org.example.realworldapi.infrastructure.repository.hibernate.entity.Follo
 import org.example.realworldapi.infrastructure.repository.hibernate.entity.FollowRelationshipEntityKey;
 import org.example.realworldapi.infrastructure.repository.hibernate.entity.UserEntity;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
 @AllArgsConstructor
-public class FollowRelationshipRepositoryPanache
-        extends AbstractDAO<FollowRelationshipEntity, FollowRelationshipEntityKey>
-        implements FollowRelationshipRepository {
+public class FollowRelationshipDAO extends AbstractDAO<FollowRelationshipEntity, FollowRelationshipEntityKey> implements FollowRelationshipRepository {
 
     private final EntityUtils entityUtils;
 
     @Override
     public boolean isFollowing(UUID currentUserId, UUID followedUserId) {
-        return count(
-                "primaryKey.user.id = :currentUserId and primaryKey.followed.id = :followedUserId",
-                Parameters.with("currentUserId", currentUserId).and("followedUserId", followedUserId))
-                > 0;
+        // TODO FIX QUERY
+        String jpql = "SELECT f FROM FOLLOW_RELATIONSHOP f WHERE primaryKey.user.id = :currentUserId and primaryKey.followed.id = :followedUserId";
+        TypedQuery<FollowRelationshipEntity> query = em.createQuery(jpql, FollowRelationshipEntity.class);
+        query.setParameter("currentUserId", currentUserId);
+        query.setParameter("followedUserId", followedUserId);
+
+        List<FollowRelationshipEntity> resultList = query.getResultList();
+        return !resultList.isEmpty();
     }
 
     @Override
@@ -40,29 +43,34 @@ public class FollowRelationshipRepositoryPanache
 
     @Override
     public Optional<FollowRelationship> findByUsers(User loggedUser, User followedUser) {
-        return findUsersFollowedEntityByUsers(loggedUser, followedUser)
-                .map(this::followingRelationship);
+        return findUsersFollowedEntityByUsers(loggedUser, followedUser).map(this::followingRelationship);
     }
 
     @Override
     public void remove(FollowRelationship followRelationship) {
-        final var usersFollowedEntity =
-                findUsersFollowedEntityByUsers(
-                        followRelationship.getUser(), followRelationship.getFollowed())
-                        .orElseThrow();
+        final var usersFollowedEntity = findUsersFollowedEntityByUsers(followRelationship.getUser(), followRelationship.getFollowed()).orElseThrow();
         em.remove(usersFollowedEntity);
     }
 
-    private Optional<FollowRelationshipEntity> findUsersFollowedEntityByUsers(
-            User loggedUser, User followedUser) {
+    private Optional<FollowRelationshipEntity> findUsersFollowedEntityByUsers(User loggedUser, User followedUser) {
         final var loggedUserEntity = findUserEntityById(loggedUser.getId());
         final var followedEntity = findUserEntityById(followedUser.getId());
-        return find("primaryKey", usersFollowedKey(loggedUserEntity, followedEntity))
-                .firstResultOptional();
+
+        //TODO test this code
+        String jpql = "SELECT f FROM FollowRelationshipEntity f " + "WHERE f.primaryKey.loggedUser = :loggedUserEntity " + "AND f.primaryKey.followedUser = :followedUserEntity";
+        TypedQuery<FollowRelationshipEntity> query = em.createQuery(jpql, FollowRelationshipEntity.class);
+        query.setParameter("loggedUserEntity", loggedUserEntity);
+        query.setParameter("followedUserEntity", followedEntity);
+
+        List<FollowRelationshipEntity> resultList = query.getResultList();
+        if (!resultList.isEmpty()) {
+            return Optional.of(resultList.get(0));
+        } else {
+            return Optional.empty();
+        }
     }
 
-    private FollowRelationship followingRelationship(
-            FollowRelationshipEntity followRelationshipEntity) {
+    private FollowRelationship followingRelationship(FollowRelationshipEntity followRelationshipEntity) {
         final var user = entityUtils.user(followRelationshipEntity.getUser());
         final var followed = entityUtils.user(followRelationshipEntity.getFollowed());
         return new FollowRelationship(user, followed);

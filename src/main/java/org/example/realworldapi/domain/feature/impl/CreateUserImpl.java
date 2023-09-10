@@ -32,13 +32,13 @@ public class CreateUserImpl implements CreateUser {
   }
 
   private void checkExistingUsername(String username) {
-    if (userRepository.existsBy("username", username)) {
+    if (userRepository.existsByUsername(username)) {
       throw new UsernameAlreadyExistsException();
     }
   }
 
   private void checkExistingEmail(String email) {
-    if (userRepository.existsBy("email", email)) {
+    if (userRepository.existsByEmail(email)) {
       throw new EmailAlreadyExistsException();
     }
   }

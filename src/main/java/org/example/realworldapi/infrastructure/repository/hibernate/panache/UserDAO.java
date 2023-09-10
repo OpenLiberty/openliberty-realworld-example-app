@@ -12,11 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static io.quarkus.panache.common.Parameters.with;
-
 @ApplicationScoped
 @AllArgsConstructor
-public class UserRepositoryPanache extends AbstractDAO<UserEntity, UUID>
+public class UserDAO extends AbstractDAO<UserEntity, UUID>
         implements UserRepository {
 
     private final EntityUtils entityUtils;
@@ -27,8 +25,23 @@ public class UserRepositoryPanache extends AbstractDAO<UserEntity, UUID>
     }
 
     @Override
-    public boolean existsBy(String field, String value) {
-        return em.count("upper(" + field + ")", value.toUpperCase().trim()) > 0;
+    public boolean existsByUsername(String username) {
+        String jpql = "SELECT u FROM UserEntity u WHERE UPPER(u.username) = :username";
+        TypedQuery<UserEntity> query = em.createQuery(jpql, UserEntity.class);
+        query.setParameter("username", username.toUpperCase().trim());
+
+        List<UserEntity> resultList = query.getResultList();
+        return !resultList.isEmpty();
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        String jpql = "SELECT u FROM UserEntity u WHERE UPPER(u.email) = :email";
+        TypedQuery<UserEntity> query = em.createQuery(jpql, UserEntity.class);
+        query.setParameter("email", email.toUpperCase().trim());
+
+        List<UserEntity> resultList = query.getResultList();
+        return !resultList.isEmpty();
     }
 
     @Override
@@ -60,24 +73,29 @@ public class UserRepositoryPanache extends AbstractDAO<UserEntity, UUID>
 
     @Override
     public boolean existsUsername(UUID excludeId, String username) {
-        return count(
-                "id != :excludeId and upper(username) = :username",
-                with("excludeId", excludeId).and("username", username.toUpperCase().trim()))
-                > 0;
+        String jpql = "SELECT u FROM UserEntity u WHERE UPPER(u.username) = :username and u.id != :excludeId";
+        TypedQuery<UserEntity> query = em.createQuery(jpql, UserEntity.class);
+        query.setParameter("username", username.toUpperCase().trim());
+        query.setParameter("excludeId", excludeId);
+
+        List<UserEntity> resultList = query.getResultList();
+        return !resultList.isEmpty();
     }
 
     @Override
     public boolean existsEmail(UUID excludeId, String email) {
-        return count(
-                "id != :excludeId and upper(email) = :email",
-                with("excludeId", excludeId).and("email", email.toUpperCase().trim()))
-                > 0;
+        String jpql = "SELECT u FROM UserEntity u WHERE UPPER(u.email) = :email and u.id != :excludeId";
+        TypedQuery<UserEntity> query = em.createQuery(jpql, UserEntity.class);
+        query.setParameter("email", email.toUpperCase().trim());
+        query.setParameter("excludeId", excludeId);
+
+        List<UserEntity> resultList = query.getResultList();
+        return !resultList.isEmpty();
     }
 
     @Override
     public void update(User user) {
-        final var userEntity = findById(user.getId());
-        userEntity.update(user);
+        em.merge(user);
     }
 
     @Override
