@@ -1,26 +1,25 @@
-package org.example.realworldapi.infrastructure.repository.hibernate.panache;
+package org.example.realworldapi.infrastructure.repository;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
-import lombok.AllArgsConstructor;
 import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.article.ArticleFilter;
 import org.example.realworldapi.domain.model.article.ArticleRepository;
 import org.example.realworldapi.domain.model.article.PageResult;
 import org.example.realworldapi.infrastructure.repository.hibernate.entity.ArticleEntity;
 import org.example.realworldapi.infrastructure.repository.hibernate.entity.EntityUtils;
-import org.example.realworldapi.infrastructure.repository.hibernate.panache.utils.SimpleQueryBuilder;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@ApplicationScoped
-@AllArgsConstructor
+@Dependent
 public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
         implements ArticleRepository {
 
-    private final EntityUtils entityUtils;
+    @Inject
+    private EntityUtils entityUtils;
 
     @Override
     public boolean existsBySlug(String slug) {

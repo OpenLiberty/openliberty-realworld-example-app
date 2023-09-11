@@ -1,8 +1,8 @@
-package org.example.realworldapi.infrastructure.repository.hibernate.panache;
+package org.example.realworldapi.infrastructure.repository;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import jakarta.persistence.TypedQuery;
-import lombok.AllArgsConstructor;
 import org.example.realworldapi.domain.model.tag.Tag;
 import org.example.realworldapi.domain.model.tag.TagRepository;
 import org.example.realworldapi.infrastructure.repository.hibernate.entity.EntityUtils;
@@ -13,12 +13,12 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@ApplicationScoped
-@AllArgsConstructor
+@Dependent
 public class TagDAO extends AbstractDAO<TagEntity, UUID>
         implements TagRepository {
 
-    private final EntityUtils entityUtils;
+    @Inject
+    private EntityUtils entityUtils;
 
     @Override
     public List<Tag> findAllTags() {

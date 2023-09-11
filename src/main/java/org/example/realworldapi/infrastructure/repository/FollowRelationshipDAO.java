@@ -1,8 +1,8 @@
-package org.example.realworldapi.infrastructure.repository.hibernate.panache;
+package org.example.realworldapi.infrastructure.repository;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import jakarta.persistence.TypedQuery;
-import lombok.AllArgsConstructor;
 import org.example.realworldapi.domain.model.user.FollowRelationship;
 import org.example.realworldapi.domain.model.user.FollowRelationshipRepository;
 import org.example.realworldapi.domain.model.user.User;
@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@ApplicationScoped
-@AllArgsConstructor
+@Dependent
 public class FollowRelationshipDAO extends AbstractDAO<FollowRelationshipEntity, FollowRelationshipEntityKey> implements FollowRelationshipRepository {
 
-    private final EntityUtils entityUtils;
+    @Inject
+    private EntityUtils entityUtils;
 
     @Override
     public boolean isFollowing(UUID currentUserId, UUID followedUserId) {

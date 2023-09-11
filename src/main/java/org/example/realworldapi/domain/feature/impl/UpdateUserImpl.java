@@ -1,6 +1,6 @@
 package org.example.realworldapi.domain.feature.impl;
 
-import lombok.AllArgsConstructor;
+import jakarta.inject.Inject;
 import org.example.realworldapi.domain.exception.EmailAlreadyExistsException;
 import org.example.realworldapi.domain.exception.UsernameAlreadyExistsException;
 import org.example.realworldapi.domain.feature.FindUserById;
@@ -12,64 +12,66 @@ import org.example.realworldapi.domain.validator.ModelValidator;
 
 import java.util.UUID;
 
-@AllArgsConstructor
 public class UpdateUserImpl implements UpdateUser {
 
-  private final FindUserById findUserById;
-  private final UserRepository userRepository;
-  private final ModelValidator modelValidator;
+    @Inject
+    private FindUserById findUserById;
+    @Inject
+    private UserRepository userRepository;
+    @Inject
+    private ModelValidator modelValidator;
 
-  @Override
-  public User handle(UpdateUserInput updateUserInput) {
-    final var user = findUserById.handle(updateUserInput.getId());
-    checkValidations(updateUserInput, updateUserInput.getId());
-    updateFields(user, updateUserInput);
-    userRepository.update(modelValidator.validate(user));
-    return user;
-  }
-
-  private void updateFields(User user, UpdateUserInput updateUserInput) {
-    if (isPresent(updateUserInput.getUsername())) {
-      user.setUsername(updateUserInput.getUsername());
+    @Override
+    public User handle(UpdateUserInput updateUserInput) {
+        final var user = findUserById.handle(updateUserInput.getId());
+        checkValidations(updateUserInput, updateUserInput.getId());
+        updateFields(user, updateUserInput);
+        userRepository.update(modelValidator.validate(user));
+        return user;
     }
 
-    if (isPresent(updateUserInput.getEmail())) {
-      user.setEmail(updateUserInput.getEmail());
+    private void updateFields(User user, UpdateUserInput updateUserInput) {
+        if (isPresent(updateUserInput.getUsername())) {
+            user.setUsername(updateUserInput.getUsername());
+        }
+
+        if (isPresent(updateUserInput.getEmail())) {
+            user.setEmail(updateUserInput.getEmail());
+        }
+
+        if (isPresent(updateUserInput.getBio())) {
+            user.setBio(updateUserInput.getBio());
+        }
+
+        if (isPresent(updateUserInput.getImage())) {
+            user.setImage(updateUserInput.getImage());
+        }
     }
 
-    if (isPresent(updateUserInput.getBio())) {
-      user.setBio(updateUserInput.getBio());
+    private void checkValidations(UpdateUserInput updateUserInput, UUID excludeId) {
+
+        if (isPresent(updateUserInput.getUsername())) {
+            checkUsername(excludeId, updateUserInput.getUsername());
+        }
+
+        if (isPresent(updateUserInput.getEmail())) {
+            checkEmail(excludeId, updateUserInput.getEmail());
+        }
     }
 
-    if (isPresent(updateUserInput.getImage())) {
-      user.setImage(updateUserInput.getImage());
-    }
-  }
-
-  private void checkValidations(UpdateUserInput updateUserInput, UUID excludeId) {
-
-    if (isPresent(updateUserInput.getUsername())) {
-      checkUsername(excludeId, updateUserInput.getUsername());
+    private boolean isPresent(String property) {
+        return property != null && !property.isEmpty();
     }
 
-    if (isPresent(updateUserInput.getEmail())) {
-      checkEmail(excludeId, updateUserInput.getEmail());
+    private void checkUsername(UUID selfId, String username) {
+        if (userRepository.existsUsername(selfId, username)) {
+            throw new UsernameAlreadyExistsException();
+        }
     }
-  }
 
-  private boolean isPresent(String property) {
-    return property != null && !property.isEmpty();
-  }
-
-  private void checkUsername(UUID selfId, String username) {
-    if (userRepository.existsUsername(selfId, username)) {
-      throw new UsernameAlreadyExistsException();
+    private void checkEmail(UUID selfId, String email) {
+        if (userRepository.existsEmail(selfId, email)) {
+            throw new EmailAlreadyExistsException();
+        }
     }
-  }
-
-  private void checkEmail(UUID selfId, String email) {
-    if (userRepository.existsEmail(selfId, email)) {
-      throw new EmailAlreadyExistsException();
-    }
-  }
 }

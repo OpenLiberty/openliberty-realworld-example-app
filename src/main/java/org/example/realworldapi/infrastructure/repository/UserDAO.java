@@ -1,8 +1,8 @@
-package org.example.realworldapi.infrastructure.repository.hibernate.panache;
+package org.example.realworldapi.infrastructure.repository;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import jakarta.persistence.TypedQuery;
-import lombok.AllArgsConstructor;
 import org.example.realworldapi.domain.model.user.User;
 import org.example.realworldapi.domain.model.user.UserRepository;
 import org.example.realworldapi.infrastructure.repository.hibernate.entity.EntityUtils;
@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@ApplicationScoped
-@AllArgsConstructor
+@Dependent
 public class UserDAO extends AbstractDAO<UserEntity, UUID>
         implements UserRepository {
 
-    private final EntityUtils entityUtils;
+    @Inject
+    private EntityUtils entityUtils;
 
     @Override
     public void save(User user) {

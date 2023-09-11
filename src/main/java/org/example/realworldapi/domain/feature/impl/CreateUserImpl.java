@@ -1,5 +1,6 @@
 package org.example.realworldapi.domain.feature.impl;
 
+import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import org.example.realworldapi.domain.exception.EmailAlreadyExistsException;
 import org.example.realworldapi.domain.exception.UsernameAlreadyExistsException;
@@ -10,12 +11,14 @@ import org.example.realworldapi.domain.model.user.User;
 import org.example.realworldapi.domain.model.user.UserModelBuilder;
 import org.example.realworldapi.domain.model.user.UserRepository;
 
-@AllArgsConstructor
 public class CreateUserImpl implements CreateUser {
 
-  private final UserRepository userRepository;
-  private final HashProvider hashProvider;
-  private final UserModelBuilder userBuilder;
+  @Inject
+  private UserRepository userRepository;
+  @Inject
+  private HashProvider hashProvider;
+  @Inject
+  private UserModelBuilder userBuilder;
 
   @Override
   public User handle(CreateUserInput createUserInput) {

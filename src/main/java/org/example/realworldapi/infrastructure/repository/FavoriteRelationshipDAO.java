@@ -1,9 +1,9 @@
-package org.example.realworldapi.infrastructure.repository.hibernate.panache;
+package org.example.realworldapi.infrastructure.repository;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
-import lombok.AllArgsConstructor;
 import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.article.FavoriteRelationship;
 import org.example.realworldapi.domain.model.article.FavoriteRelationshipRepository;
@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@ApplicationScoped
-@AllArgsConstructor
+@Dependent
 public class FavoriteRelationshipDAO
         extends AbstractDAO<FavoriteRelationshipEntity, FavoriteRelationshipEntityKey>
         implements FavoriteRelationshipRepository {
 
-    private final EntityUtils entityUtils;
+    @Inject
+    private EntityUtils entityUtils;
 
     @Override
     public boolean isFavorited(Article article, UUID currentUserId) {

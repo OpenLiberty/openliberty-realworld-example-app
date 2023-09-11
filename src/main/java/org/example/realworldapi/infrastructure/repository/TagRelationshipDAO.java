@@ -1,8 +1,8 @@
-package org.example.realworldapi.infrastructure.repository.hibernate.panache;
+package org.example.realworldapi.infrastructure.repository;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import jakarta.persistence.Query;
-import lombok.AllArgsConstructor;
 import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.article.TagRelationship;
 import org.example.realworldapi.domain.model.article.TagRelationshipRepository;
@@ -14,13 +14,13 @@ import org.example.realworldapi.infrastructure.repository.hibernate.entity.TagRe
 
 import java.util.List;
 
-@ApplicationScoped
-@AllArgsConstructor
+@Dependent
 public class TagRelationshipDAO
         extends AbstractDAO<TagRelationshipEntity, TagRelationshipEntityKey>
         implements TagRelationshipRepository {
 
-    private final EntityUtils entityUtils;
+    @Inject
+    private EntityUtils entityUtils;
 
     @Override
     public void save(TagRelationship tagRelationship) {

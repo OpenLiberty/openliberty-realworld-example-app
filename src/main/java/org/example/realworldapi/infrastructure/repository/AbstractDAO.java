@@ -1,4 +1,4 @@
-package org.example.realworldapi.infrastructure.repository.hibernate.panache;
+package org.example.realworldapi.infrastructure.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class AbstractDAO<ENTITY, ID> {
+public abstract class AbstractDAO<ENTITY, ID> {
 
     @PersistenceContext
     protected EntityManager em;

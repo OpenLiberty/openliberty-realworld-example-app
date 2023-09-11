@@ -1,4 +1,4 @@
-package org.example.realworldapi.infrastructure.repository.hibernate.panache.utils;
+package org.example.realworldapi.infrastructure.repository;
 
 import java.util.LinkedList;
 import java.util.List;

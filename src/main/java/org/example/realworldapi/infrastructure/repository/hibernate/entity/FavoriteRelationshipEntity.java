@@ -10,6 +10,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
 @Table(name = "FAVORITE_RELATIONSHIP")
 public class FavoriteRelationshipEntity {
 

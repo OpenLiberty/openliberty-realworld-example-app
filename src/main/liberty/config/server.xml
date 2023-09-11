@@ -1,34 +1,34 @@
 <server description="Sample Liberty server">
 
     <featureManager>
-        <feature>microProfile-3.0</feature>
-        <feature>jpa-2.2</feature>
+        <feature>microProfile-6.0</feature>
+        <feature>jakartaee-10.0</feature>
     </featureManager>
 
-    <httpEndpoint httpPort="${default.http.port}" httpsPort="${default.https.port}"
+    <httpEndpoint httpPort="9080" httpsPort="9443"
                   id="defaultHttpEndpoint" host="*"/>
-    
-    <application name="RealWorld" location="${appLocation}" type="war" context-root="/">
-    </application>
-      
+
+    <!--    <application name="RealWorld" location="${appLocation}" type="war" context-root="/">-->
+    <!--    </application>-->
+
     <!-- Derby Library Configuration -->
     <library id="derbyJDBCLib">
-        <fileset dir="${shared.resource.dir}" includes="derby*.jar" />
+        <fileset dir="${shared.resource.dir}" includes="derby*.jar"/>
     </library>
 
     <!-- Datasource Configuration -->
-    <dataSource id="RealWorldSource" 
+    <dataSource id="RealWorldSource"
                 jndiName="jdbc/RealWorldSource">
-        <jdbcDriver libraryRef="derbyJDBCLib" />
-        <properties.derby.embedded databaseName="UserDB" createDatabase="create" />
+        <jdbcDriver libraryRef="derbyJDBCLib"/>
+        <properties.derby.embedded databaseName="UserDB" createDatabase="create"/>
     </dataSource>
 
     <cors domain="/api"
-        allowedOrigins="http://localhost:4100"
-        allowedMethods="GET, POST, PUT"
-        allowedHeaders="*"
-        allowCredentials="true"
-        maxAge="3600" />
+          allowedOrigins="http://localhost:4100"
+          allowedMethods="GET, POST, PUT"
+          allowedHeaders="*"
+          allowCredentials="true"
+          maxAge="3600"/>
 
     <!-- MP JWT configuration -->
     <mpJwt id="jwtHandler" issuer="https://192.168.1.15:9443/jwt/defaultJWT" authorizationHeaderScheme="Token "/>
