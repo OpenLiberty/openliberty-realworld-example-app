@@ -13,11 +13,11 @@ import org.example.realworldapi.infrastructure.web.qualifiers.NoWrapRootValueObj
 @Dependent
 public class ApplicationConfiguration {
 
-  @Produces
-  @Singleton
-  public Slugify slugify() {
-    return new Slugify();
-  }
+//  @Produces
+//  @Singleton
+//  public Slugify slugify() {
+//    return new Slugify();
+//  }
 
   @Singleton
   @Produces

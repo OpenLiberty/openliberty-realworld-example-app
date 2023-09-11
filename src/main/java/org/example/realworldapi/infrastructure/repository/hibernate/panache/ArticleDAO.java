@@ -1,7 +1,5 @@
 package org.example.realworldapi.infrastructure.repository.hibernate.panache;
 
-import io.quarkus.panache.common.Page;
-import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -154,15 +152,22 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
                 filter.getAuthors(),
                 filter.getFavorited(),
                 params);
-        final var articlesEntity =
-                find(
-                        findArticlesQueryBuilder.toQueryString(),
-                        Sort.descending("createdAt").and("updatedAt").descending(),
-                        params)
-                        .page(Page.of(filter.getOffset(), filter.getLimit()))
-                        .list();
+
+        String jpql = findArticlesQueryBuilder.toQueryString();
+        jpql = jpql + " ORDER BY articles.createdAt DESC, articles.updatetAt DESC;";
+        Query query = em.createQuery(jpql);
+
+        // Handle paging
+        int offset = filter.getOffset();
+        int limit = filter.getLimit();
+        query.setFirstResult(offset);
+        query.setMaxResults(limit);
+
+        // Execute the query and fetch the results
+        List<ArticleEntity> articlesEntity = query.getResultList();
+
         final var articlesResult =
-                articlesEntity.stream().map(entityUtils::article).collect(Collectors.toList());
+                articlesEntity.stream().map(entityUtils::article).toList();
         final var total = count(filter.getTags(), filter.getAuthors(), filter.getFavorited());
         return new PageResult<>(articlesResult, total);
     }
@@ -178,15 +183,44 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
     }
 
     @Override
+//    TODO test this thourouglhy
     public long count(List<String> tags, List<String> authors, List<String> favorited) {
-        Map<String, Object> params = new LinkedHashMap<>();
-        SimpleQueryBuilder countArticlesQueryBuilder = new SimpleQueryBuilder();
-        countArticlesQueryBuilder.addQueryStatement("from ArticleEntity as articles");
-        configFilterFindArticlesQueryBuilder(
-                countArticlesQueryBuilder, tags, authors, favorited, params);
-        return count(countArticlesQueryBuilder.toQueryString(), params);
+        StringBuilder jpql = new StringBuilder("SELECT COUNT(a) FROM ArticleEntity a");
+
+        if (!tags.isEmpty() || !authors.isEmpty() || !favorited.isEmpty()) {
+            jpql.append(" WHERE 1=1"); // To start building conditions
+
+            if (!tags.isEmpty()) {
+                jpql.append(" AND a.tags.name IN :tags");
+            }
+
+            if (!authors.isEmpty()) {
+                jpql.append(" AND a.author.username IN :authors");
+            }
+
+            if (!favorited.isEmpty()) {
+                jpql.append(" AND a.favorites.user.username IN :favorites");
+            }
+        }
+
+        TypedQuery<Long> query = em.createQuery(jpql.toString(), Long.class);
+
+        if (!tags.isEmpty()) {
+            query.setParameter("tags", tags);
+        }
+
+        if (!authors.isEmpty()) {
+            query.setParameter("authors", authors);
+        }
+
+        if (!favorited.isEmpty()) {
+            query.setParameter("favorites", favorited);
+        }
+
+        return query.getSingleResult();
     }
 
+    //    TODO refactor not needing code beneath
     private void configFilterFindArticlesQueryBuilder(
             SimpleQueryBuilder findArticlesQueryBuilder,
             List<String> tags,

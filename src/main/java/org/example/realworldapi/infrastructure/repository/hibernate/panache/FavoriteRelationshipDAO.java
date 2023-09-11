@@ -1,6 +1,8 @@
 package org.example.realworldapi.infrastructure.repository.hibernate.panache;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import lombok.AllArgsConstructor;
 import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.article.FavoriteRelationship;
@@ -9,14 +11,13 @@ import org.example.realworldapi.infrastructure.repository.hibernate.entity.Entit
 import org.example.realworldapi.infrastructure.repository.hibernate.entity.FavoriteRelationshipEntity;
 import org.example.realworldapi.infrastructure.repository.hibernate.entity.FavoriteRelationshipEntityKey;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static io.quarkus.panache.common.Parameters.with;
-
 @ApplicationScoped
 @AllArgsConstructor
-public class FavoriteRelationshipRepositoryPanache
+public class FavoriteRelationshipDAO
         extends AbstractDAO<FavoriteRelationshipEntity, FavoriteRelationshipEntityKey>
         implements FavoriteRelationshipRepository {
 
@@ -24,25 +25,35 @@ public class FavoriteRelationshipRepositoryPanache
 
     @Override
     public boolean isFavorited(Article article, UUID currentUserId) {
-        return count(
-                "article.id = :articleId and user.id = :currentUserId",
-                with("articleId", article.getId()).and("currentUserId", currentUserId))
-                > 0;
+        String jpql = "SELECT COUNT(f) FROM FavoriteRelationship f where f.id = :articleId and f.user.id = :currentUserId";
+        TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+        Long qty = query.getSingleResult();
+        return !(qty > 0);
     }
 
     @Override
     public long favoritesCount(Article article) {
-        return count("article.id", article.getId());
+        String jpql = "SELECT COUNT(f) FROM FavoriteRelationship f where f.id = :articleId";
+        TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+        query.setParameter("articleId", article.getId());
+        return query.getSingleResult();
     }
 
     @Override
     public Optional<FavoriteRelationship> findByArticleIdAndUserId(
             UUID articleId, UUID currentUserId) {
-        return find(
-                "article.id = :articleId and user.id = :currentUserId",
-                with("articleId", articleId).and("currentUserId", currentUserId))
-                .firstResultOptional()
-                .map(entityUtils::favoriteRelationship);
+        String jpql = "SELECT f FROM FavoriteRelationship f where f.id = :articleId and f.user.id = :currentUserId";
+        Query query = em.createQuery(jpql);
+        query.setParameter("articleId", articleId);
+        query.setParameter("currentUserId", currentUserId);
+
+        List<FavoriteRelationshipEntity> resultList = query.getResultList();
+        if (!resultList.isEmpty()) {
+            FavoriteRelationship f = entityUtils.favoriteRelationship(resultList.get(0));
+            return Optional.of(f);
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
