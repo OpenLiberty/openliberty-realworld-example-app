@@ -1,19 +1,21 @@
 package org.example.realworldapi.domain.feature.impl;
 
-import lombok.AllArgsConstructor;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.example.realworldapi.domain.feature.FindTags;
 import org.example.realworldapi.domain.model.tag.Tag;
 import org.example.realworldapi.domain.model.tag.TagRepository;
 
 import java.util.List;
 
-@AllArgsConstructor
+@Singleton
 public class FindTagsImpl implements FindTags {
 
-  private final TagRepository tagRepository;
+    @Inject
+    private TagRepository tagRepository;
 
-  @Override
-  public List<Tag> handle() {
-    return tagRepository.findAllTags();
-  }
+    @Override
+    public List<Tag> handle() {
+        return tagRepository.findAllTags();
+    }
 }

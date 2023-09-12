@@ -1,29 +1,31 @@
 package org.example.realworldapi.domain.validator;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import lombok.AllArgsConstructor;
 import org.example.realworldapi.domain.exception.ModelValidationException;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
+@Singleton
 public class ModelValidator {
 
-  private final Validator validator;
+    @Inject
+    private Validator validator;
 
-  public <T> T validate(T model) {
-    Set<ConstraintViolation<T>> constraintViolations = validator.validate(model);
+    public <T> T validate(T model) {
+        Set<ConstraintViolation<T>> constraintViolations = validator.validate(model);
 
-    if (!constraintViolations.isEmpty()) {
-      final var messages =
-          constraintViolations.stream()
-              .map(ConstraintViolation::getMessage)
-              .collect(Collectors.toList());
-      throw new ModelValidationException(messages);
+        if (!constraintViolations.isEmpty()) {
+            final var messages =
+                    constraintViolations.stream()
+                            .map(ConstraintViolation::getMessage)
+                            .collect(Collectors.toList());
+            throw new ModelValidationException(messages);
+        }
+
+        return model;
     }
-
-    return model;
-  }
 }

@@ -2,6 +2,7 @@ package org.example.realworldapi.infrastructure.repository.hibernate.entity;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.article.ArticleModelBuilder;
 import org.example.realworldapi.domain.model.article.FavoriteRelationship;
@@ -16,6 +17,7 @@ import org.example.realworldapi.domain.model.user.UserModelBuilder;
 public class EntityUtils {
 
     @Inject
+    @Named("usermodelbuilder")
     private UserModelBuilder userBuilder;
     @Inject
     private TagBuilder tagBuilder;

@@ -1,5 +1,6 @@
 package org.example.realworldapi.domain.feature.impl;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import org.example.realworldapi.domain.exception.EmailAlreadyExistsException;
 import org.example.realworldapi.domain.exception.UsernameAlreadyExistsException;
@@ -12,6 +13,7 @@ import org.example.realworldapi.domain.validator.ModelValidator;
 
 import java.util.UUID;
 
+@Dependent
 public class UpdateUserImpl implements UpdateUser {
 
     @Inject

@@ -1,6 +1,7 @@
 package org.example.realworldapi.domain.feature.impl;
 
-import lombok.AllArgsConstructor;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.example.realworldapi.domain.feature.FindArticleTags;
 import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.article.TagRelationshipRepository;
@@ -8,13 +9,14 @@ import org.example.realworldapi.domain.model.tag.Tag;
 
 import java.util.List;
 
-@AllArgsConstructor
+@Singleton
 public class FindArticleTagsImpl implements FindArticleTags {
 
-  private final TagRelationshipRepository tagRelationshipRepository;
+    @Inject
+    private TagRelationshipRepository tagRelationshipRepository;
 
-  @Override
-  public List<Tag> handle(Article article) {
-    return tagRelationshipRepository.findArticleTags(article);
-  }
+    @Override
+    public List<Tag> handle(Article article) {
+        return tagRelationshipRepository.findArticleTags(article);
+    }
 }

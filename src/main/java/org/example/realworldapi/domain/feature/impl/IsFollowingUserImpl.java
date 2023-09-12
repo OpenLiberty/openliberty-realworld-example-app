@@ -1,18 +1,20 @@
 package org.example.realworldapi.domain.feature.impl;
 
-import lombok.AllArgsConstructor;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import org.example.realworldapi.domain.feature.IsFollowingUser;
 import org.example.realworldapi.domain.model.user.FollowRelationshipRepository;
 
 import java.util.UUID;
 
-@AllArgsConstructor
+@Dependent
 public class IsFollowingUserImpl implements IsFollowingUser {
 
-  private final FollowRelationshipRepository usersFollowedRepository;
+    @Inject
+    private FollowRelationshipRepository usersFollowedRepository;
 
-  @Override
-  public boolean handle(UUID currentUserId, UUID followedUserId) {
-    return usersFollowedRepository.isFollowing(currentUserId, followedUserId);
-  }
+    @Override
+    public boolean handle(UUID currentUserId, UUID followedUserId) {
+        return usersFollowedRepository.isFollowing(currentUserId, followedUserId);
+    }
 }

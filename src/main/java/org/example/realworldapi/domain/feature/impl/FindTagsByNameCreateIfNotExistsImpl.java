@@ -1,6 +1,7 @@
 package org.example.realworldapi.domain.feature.impl;
 
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.example.realworldapi.domain.feature.CreateTag;
 import org.example.realworldapi.domain.feature.FindTagsByNameCreateIfNotExists;
 import org.example.realworldapi.domain.model.tag.Tag;
@@ -10,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Singleton
 public class FindTagsByNameCreateIfNotExistsImpl implements FindTagsByNameCreateIfNotExists {
 
     @Inject

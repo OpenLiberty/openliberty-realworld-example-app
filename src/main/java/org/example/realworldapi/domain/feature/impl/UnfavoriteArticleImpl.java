@@ -1,23 +1,26 @@
 package org.example.realworldapi.domain.feature.impl;
 
-import lombok.AllArgsConstructor;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.example.realworldapi.domain.feature.FindArticleBySlug;
 import org.example.realworldapi.domain.feature.UnfavoriteArticle;
 import org.example.realworldapi.domain.model.article.FavoriteRelationshipRepository;
 
 import java.util.UUID;
 
-@AllArgsConstructor
+@Singleton
 public class UnfavoriteArticleImpl implements UnfavoriteArticle {
 
-  private final FindArticleBySlug findArticleBySlug;
-  private final FavoriteRelationshipRepository favoriteRelationshipRepository;
+    @Inject
+    private FindArticleBySlug findArticleBySlug;
+    @Inject
+    private FavoriteRelationshipRepository favoriteRelationshipRepository;
 
-  @Override
-  public void handle(String articleSlug, UUID currentUserId) {
-    final var article = findArticleBySlug.handle(articleSlug);
-    final var favoriteRelationshipOptional =
-        favoriteRelationshipRepository.findByArticleIdAndUserId(article.getId(), currentUserId);
-    favoriteRelationshipOptional.ifPresent(favoriteRelationshipRepository::delete);
-  }
+    @Override
+    public void handle(String articleSlug, UUID currentUserId) {
+        final var article = findArticleBySlug.handle(articleSlug);
+        final var favoriteRelationshipOptional =
+                favoriteRelationshipRepository.findByArticleIdAndUserId(article.getId(), currentUserId);
+        favoriteRelationshipOptional.ifPresent(favoriteRelationshipRepository::delete);
+    }
 }

@@ -1,7 +1,7 @@
 package org.example.realworldapi.infrastructure.repository;
 
-import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import jakarta.persistence.TypedQuery;
 import org.example.realworldapi.domain.model.user.User;
 import org.example.realworldapi.domain.model.user.UserRepository;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Dependent
+@Singleton
 public class UserDAO extends AbstractDAO<UserEntity, UUID>
         implements UserRepository {
 

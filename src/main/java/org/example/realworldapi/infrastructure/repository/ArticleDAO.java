@@ -1,6 +1,6 @@
 package org.example.realworldapi.infrastructure.repository;
 
-import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -14,7 +14,7 @@ import org.example.realworldapi.infrastructure.repository.hibernate.entity.Entit
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Dependent
+@ApplicationScoped
 public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
         implements ArticleRepository {
 

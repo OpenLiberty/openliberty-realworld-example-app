@@ -1,19 +1,21 @@
 package org.example.realworldapi.domain.model.tag;
 
-import lombok.AllArgsConstructor;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.example.realworldapi.domain.validator.ModelValidator;
 
 import java.util.UUID;
 
-@AllArgsConstructor
+@Singleton
 public class TagBuilder {
-  private final ModelValidator modelValidator;
+    @Inject
+    private ModelValidator modelValidator;
 
-  public Tag build(String name) {
-    return modelValidator.validate(new Tag(UUID.randomUUID(), name));
-  }
+    public Tag build(String name) {
+        return modelValidator.validate(new Tag(UUID.randomUUID(), name));
+    }
 
-  public Tag build(UUID id, String name) {
-    return modelValidator.validate(new Tag(id, name));
-  }
+    public Tag build(UUID id, String name) {
+        return modelValidator.validate(new Tag(id, name));
+    }
 }
