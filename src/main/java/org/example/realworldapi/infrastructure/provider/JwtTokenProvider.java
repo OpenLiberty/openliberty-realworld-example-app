@@ -28,6 +28,9 @@ public class JwtTokenProvider implements TokenProvider {
     private String issuer;
     private Integer expirationTimeInMinutes;
 
+    public JwtTokenProvider() {
+    }
+
     public JwtTokenProvider(
             @ConfigProperty(name = "jwt.issuer") String issuer,
             @ConfigProperty(name = "jwt.secret") String secret,
