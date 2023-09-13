@@ -5,11 +5,16 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.example.realworldapi.domain.model.provider.SlugProvider;
 
+
 @ApplicationScoped
 public class SlugifySlugProvider implements SlugProvider {
 
-    @Inject
     private Slugify slugify;
+
+    @Inject
+    public SlugifySlugProvider() {
+        this.slugify = Slugify.builder().build();
+    }
 
     @Override
     public String slugify(String text) {

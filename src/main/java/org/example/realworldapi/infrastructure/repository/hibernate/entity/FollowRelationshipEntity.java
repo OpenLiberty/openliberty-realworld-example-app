@@ -13,35 +13,40 @@ import java.util.Objects;
 @NoArgsConstructor
 @Table(name = "FOLLOW_RELATIONSHIP")
 public class FollowRelationshipEntity {
-  @EmbeddedId private FollowRelationshipEntityKey primaryKey;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @ManyToOne
-  @JoinColumn(insertable = false, updatable = false)
-  private UserEntity user;
+    @Embedded
+    private FollowRelationshipEntityKey primaryKey;
 
-  @ManyToOne
-  @JoinColumn(insertable = false, updatable = false)
-  private UserEntity followed;
+    @ManyToOne
+    @JoinColumn(insertable = false, updatable = false)
+    private UserEntity user;
 
-  public FollowRelationshipEntity(UserEntity user, UserEntity followed) {
-    final var usersFollowedEntityKey = new FollowRelationshipEntityKey();
-    usersFollowedEntityKey.setUser(user);
-    usersFollowedEntityKey.setFollowed(followed);
-    this.primaryKey = usersFollowedEntityKey;
-  }
+    @ManyToOne
+    @JoinColumn(insertable = false, updatable = false)
+    private UserEntity followed;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
+    public FollowRelationshipEntity(UserEntity user, UserEntity followed) {
+        final var usersFollowedEntityKey = new FollowRelationshipEntityKey();
+        usersFollowedEntityKey.setUser(user);
+        usersFollowedEntityKey.setFollowed(followed);
+        this.primaryKey = usersFollowedEntityKey;
+    }
 
-    if (o == null || getClass() != o.getClass()) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
 
-    FollowRelationshipEntity that = (FollowRelationshipEntity) o;
-    return Objects.equals(primaryKey, that.primaryKey);
-  }
+        if (o == null || getClass() != o.getClass()) return false;
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(primaryKey);
-  }
+        FollowRelationshipEntity that = (FollowRelationshipEntity) o;
+        return Objects.equals(primaryKey, that.primaryKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(primaryKey);
+    }
 }

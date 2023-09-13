@@ -14,35 +14,40 @@ import java.util.Objects;
 @Table(name = "FAVORITE_RELATIONSHIP")
 public class FavoriteRelationshipEntity {
 
-  @EmbeddedId private FavoriteRelationshipEntityKey primaryKey;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @ManyToOne
-  @JoinColumn(insertable = false, updatable = false)
-  private ArticleEntity article;
+    @Embedded
+    private FavoriteRelationshipEntityKey primaryKey;
 
-  @ManyToOne
-  @JoinColumn(insertable = false, updatable = false)
-  private UserEntity user;
+    @ManyToOne
+    @JoinColumn(insertable = false, updatable = false)
+    private ArticleEntity article;
 
-  public FavoriteRelationshipEntity(UserEntity user, ArticleEntity article) {
-    final var favoriteRelationshipEntityKey = new FavoriteRelationshipEntityKey();
-    favoriteRelationshipEntityKey.setUser(user);
-    favoriteRelationshipEntityKey.setArticle(article);
-    this.primaryKey = favoriteRelationshipEntityKey;
-  }
+    @ManyToOne
+    @JoinColumn(insertable = false, updatable = false)
+    private UserEntity user;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
+    public FavoriteRelationshipEntity(UserEntity user, ArticleEntity article) {
+        final var favoriteRelationshipEntityKey = new FavoriteRelationshipEntityKey();
+        favoriteRelationshipEntityKey.setUser(user);
+        favoriteRelationshipEntityKey.setArticle(article);
+        this.primaryKey = favoriteRelationshipEntityKey;
+    }
 
-    if (o == null || getClass() != o.getClass()) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
 
-    FavoriteRelationshipEntity that = (FavoriteRelationshipEntity) o;
-    return Objects.equals(primaryKey, that.primaryKey);
-  }
+        if (o == null || getClass() != o.getClass()) return false;
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(primaryKey);
-  }
+        FavoriteRelationshipEntity that = (FavoriteRelationshipEntity) o;
+        return Objects.equals(primaryKey, that.primaryKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(primaryKey);
+    }
 }

@@ -19,18 +19,14 @@ import java.util.UUID;
 @ApplicationScoped
 public class JwtTokenProvider implements TokenProvider {
 
-    public final String COMPLEMENTARY_SUBSCRIPTION = "complementary-subscription";
-    public final String CLAIM_ROLES = "ROLES";
-    @Inject
+    private final String COMPLEMENTARY_SUBSCRIPTION = "complementary-subscription";
+    private final String CLAIM_ROLES = "ROLES";
     private Algorithm algorithm;
-    @Inject
     private JWTVerifier jwtVerifier;
     private String issuer;
     private Integer expirationTimeInMinutes;
 
-    public JwtTokenProvider() {
-    }
-
+    @Inject
     public JwtTokenProvider(
             @ConfigProperty(name = "jwt.issuer") String issuer,
             @ConfigProperty(name = "jwt.secret") String secret,
