@@ -10,8 +10,8 @@
     <httpEndpoint httpPort="9080" httpsPort="9443"
                   id="defaultHttpEndpoint" host="*"/>
 
-    <!--    <application name="RealWorld" location="${appLocation}" type="war" context-root="/">-->
-    <!--    </application>-->
+    <application name="RealWorld" location="realworld-liberty-1.0-SNAPSHOT.war" type="war" context-root="/">
+    </application>
 
     <!-- PostgreSQL Library Configuration -->
     <library id="postgresqlLib">
