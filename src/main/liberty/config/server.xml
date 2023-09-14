@@ -1,4 +1,6 @@
 <server description="Sample Liberty server">
+    <variable name="POSTGRESQL_HOSTNAME" defaultValue="localhost"/>
+    <variable name="POSTGRESQL_PORT" defaultValue="5432"/>
 
     <featureManager>
         <feature>microProfile-6.0</feature>
@@ -11,16 +13,15 @@
     <!--    <application name="RealWorld" location="${appLocation}" type="war" context-root="/">-->
     <!--    </application>-->
 
-    <!-- Derby Library Configuration -->
-    <library id="derbyJDBCLib">
-        <fileset dir="${shared.resource.dir}" includes="derby*.jar"/>
+    <!-- PostgreSQL Library Configuration -->
+    <library id="postgresqlLib">
+        <fileset dir="${shared.resource.dir}" includes="postgresql*.jar"/>
     </library>
 
-    <!-- Datasource Configuration -->
-    <dataSource id="RealWorldSource"
-                jndiName="jdbc/RealWorldSource">
-        <jdbcDriver libraryRef="derbyJDBCLib"/>
-        <properties.derby.embedded databaseName="UserDB" createDatabase="create"/>
+    <dataSource id="DefaultDataSource" jndiName="jdbc/RealWorldSource">
+        <jdbcDriver libraryRef="postgresqlLib"/>
+        <properties.postgresql serverName="${POSTGRESQL_HOSTNAME}" portNumber="${POSTGRESQL_PORT}"
+                               databaseName="postgres_db" user="postgres_user" password="S3cret"/>
     </dataSource>
 
     <cors domain="/api"
