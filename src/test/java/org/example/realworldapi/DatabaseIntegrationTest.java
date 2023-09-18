@@ -4,12 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Table;
-import org.h2.jdbcx.JdbcDataSource;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
+import org.postgresql.ds.PGSimpleDataSource;
 import org.reflections.Reflections;
 
 import javax.sql.DataSource;
@@ -58,13 +58,34 @@ public class DatabaseIntegrationTest {
 
     private static Properties properties() {
         Properties properties = new Properties();
-        properties.put(Environment.DRIVER, "org.h2.Driver");
-        properties.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-        properties.put(Environment.HBM2DDL_AUTO, "create-drop");
+        properties.put(Environment.DRIVER, "org.postgresql.Driver");
+        properties.put(Environment.HBM2DDL_AUTO, "none");
         properties.put(Environment.DATASOURCE, dataSource);
         return properties;
     }
 
+    public void clear() {
+        transaction(
+                () ->
+                        entities.forEach(
+                                tableName ->
+                                        entityManager
+                                                .createNativeQuery(
+                                                        "TRUNCATE TABLE "
+                                                                + tableName
+                                                                + " CASCADE;")
+                                                .executeUpdate()));
+    }
+
+    private static DataSource dataSource() {
+        PGSimpleDataSource jdbcDataSource = new PGSimpleDataSource();
+        jdbcDataSource.setUrl("jdbc:postgresql://localhost:5432/postgres_db");
+        jdbcDataSource.setUser("postgres_user");
+        jdbcDataSource.setPassword("S3cret");
+        return jdbcDataSource;
+    }
+
+    //    TODO able to use standard reflection for this?
     private static void configEntityClasses(Configuration configuration, String packageToScan) {
         Reflections reflections = new Reflections(packageToScan);
         reflections
@@ -75,27 +96,6 @@ public class DatabaseIntegrationTest {
                             entities.add(tableName);
                             configuration.addAnnotatedClass(entity);
                         });
-    }
-
-    private static DataSource dataSource() {
-        JdbcDataSource jdbcDataSource = new JdbcDataSource();
-        jdbcDataSource.setUrl("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
-        jdbcDataSource.setUser("sa");
-        jdbcDataSource.setPassword("");
-        return jdbcDataSource;
-    }
-
-    public void clear() {
-        transaction(
-                () ->
-                        entities.forEach(
-                                tableName ->
-                                        entityManager
-                                                .createNativeQuery(
-                                                        "SET REFERENTIAL_INTEGRITY FALSE; TRUNCATE TABLE "
-                                                                + tableName
-                                                                + "; SET REFERENTIAL_INTEGRITY TRUE;")
-                                                .executeUpdate()));
     }
 
     public void transaction(Runnable command) {
