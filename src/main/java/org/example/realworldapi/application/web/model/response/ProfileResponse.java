@@ -1,13 +1,14 @@
 package org.example.realworldapi.application.web.model.response;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
+import jakarta.json.bind.annotation.JsonbNillable;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.realworldapi.domain.model.user.User;
 
 @Getter
 @Setter
-@JsonRootName("profile")
+//@JsonRootName("profile")
+@JsonbNillable(true)
 public class ProfileResponse {
 
     private String username;

@@ -1,13 +1,14 @@
 package org.example.realworldapi.application.web.model.request;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
+import jakarta.json.bind.annotation.JsonbNillable;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.realworldapi.domain.model.user.CreateUserInput;
 
 @Getter
 @Setter
-@JsonRootName("user")
+//@JsonRootName("user")
+@JsonbNillable(true)
 public class NewUserRequest {
     private String username;
     private String email;

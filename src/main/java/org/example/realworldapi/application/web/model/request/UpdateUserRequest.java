@@ -1,6 +1,6 @@
 package org.example.realworldapi.application.web.model.request;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
+import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -13,7 +13,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@JsonRootName("user")
+//@JsonRootName("user")
+@JsonbNillable(true)
 @AtLeastOneFieldMustBeNotNull
 public class UpdateUserRequest {
 

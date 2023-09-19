@@ -1,6 +1,6 @@
 package org.example.realworldapi.application.web.model.request;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
+import jakarta.json.bind.annotation.JsonbNillable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +12,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonRootName("article")
+//@JsonRootName("article")
+@JsonbNillable(true)
 @AtLeastOneFieldMustBeNotNull
 public class UpdateArticleRequest {
 

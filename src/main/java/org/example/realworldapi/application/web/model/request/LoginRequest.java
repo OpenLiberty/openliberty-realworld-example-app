@@ -1,6 +1,6 @@
 package org.example.realworldapi.application.web.model.request;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
+import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,8 @@ import org.example.realworldapi.domain.model.user.LoginUserInput;
 
 @Getter
 @Setter
-@JsonRootName("user")
+//@JsonRootName("user")
+@JsonbNillable(true)
 public class LoginRequest {
 
     @NotBlank(message = ValidationMessages.EMAIL_MUST_BE_NOT_BLANK)

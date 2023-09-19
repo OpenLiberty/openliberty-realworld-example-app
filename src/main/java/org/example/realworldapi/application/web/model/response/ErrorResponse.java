@@ -1,6 +1,6 @@
 package org.example.realworldapi.application.web.model.response;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
+import jakarta.json.bind.annotation.JsonbNillable;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +9,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@JsonRootName("errors")
+//@JsonRootName("errors")
+@JsonbNillable(true)
 public class ErrorResponse {
 
     private List<String> body;

@@ -1,6 +1,6 @@
 package org.example.realworldapi.application.web.model.request;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
+import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@JsonRootName("comment")
+//@JsonRootName("comment")
+@JsonbNillable(true)
 public class NewCommentRequest {
     @NotBlank(message = ValidationMessages.BODY_MUST_BE_NOT_BLANK)
     private String body;

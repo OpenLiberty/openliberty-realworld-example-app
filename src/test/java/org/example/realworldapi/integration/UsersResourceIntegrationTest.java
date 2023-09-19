@@ -31,7 +31,7 @@ public class UsersResourceIntegrationTest extends AbstractIntegrationTest {
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(objectMapper.writeValueAsString(newUser))
+                .body(newUser)
                 .when()
                 .post(USERS_RESOURCE_PATH)
                 .then()
@@ -69,7 +69,7 @@ public class UsersResourceIntegrationTest extends AbstractIntegrationTest {
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(objectMapper.writeValueAsString(newUser))
+                .body(newUser)
                 .when()
                 .post(USERS_RESOURCE_PATH)
                 .then()
@@ -93,7 +93,7 @@ public class UsersResourceIntegrationTest extends AbstractIntegrationTest {
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(objectMapper.writeValueAsString(newUser))
+                .body(newUser)
                 .when()
                 .post(USERS_RESOURCE_PATH)
                 .then()
@@ -108,7 +108,7 @@ public class UsersResourceIntegrationTest extends AbstractIntegrationTest {
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(objectMapper.writeValueAsString(newUser))
+                .body(newUser)
                 .when()
                 .post(USERS_RESOURCE_PATH)
                 .then()
@@ -133,7 +133,7 @@ public class UsersResourceIntegrationTest extends AbstractIntegrationTest {
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(objectMapper.writeValueAsString(newUser))
+                .body(newUser)
                 .when()
                 .post(USERS_RESOURCE_PATH)
                 .then()
@@ -153,7 +153,7 @@ public class UsersResourceIntegrationTest extends AbstractIntegrationTest {
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(objectMapper.writeValueAsString(loginRequest))
+                .body(loginRequest)
                 .when()
                 .post(LOGIN_PATH)
                 .then()
@@ -175,7 +175,7 @@ public class UsersResourceIntegrationTest extends AbstractIntegrationTest {
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(objectMapper.writeValueAsString(loginRequest))
+                .body(loginRequest)
                 .when()
                 .post(LOGIN_PATH)
                 .then()
@@ -195,7 +195,7 @@ public class UsersResourceIntegrationTest extends AbstractIntegrationTest {
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(objectMapper.writeValueAsString(loginRequest))
+                .body(loginRequest)
                 .when()
                 .post(LOGIN_PATH)
                 .then()

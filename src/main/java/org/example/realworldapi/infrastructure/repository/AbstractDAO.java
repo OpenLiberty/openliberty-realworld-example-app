@@ -2,6 +2,7 @@ package org.example.realworldapi.infrastructure.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.example.realworldapi.domain.model.article.FavoriteRelationship;
 import org.example.realworldapi.infrastructure.repository.hibernate.entity.*;
 
@@ -33,14 +34,16 @@ public abstract class AbstractDAO<ENTITY, ID> {
     protected FavoriteRelationshipEntity findFavoriteRelationshipEntityByKey(
             FavoriteRelationship favoriteRelationship) {
 
-        final var userEntity = findUserEntityById(favoriteRelationship.getUser().getId());
-        final var articleEntity = findArticleEntityById(favoriteRelationship.getArticle().getId());
+        Query query = em.createNamedQuery("FVREfindByArticleAndUserID");
+        query.setParameter("articleId", favoriteRelationship.getArticle().getId());
+        query.setParameter("currentUserId", favoriteRelationship.getUser().getId());
 
-        final var favoriteRelationshipEntityKey = new FavoriteRelationshipEntityKey();
-        favoriteRelationshipEntityKey.setUser(userEntity);
-        favoriteRelationshipEntityKey.setArticle(articleEntity);
-
-        return em.find(FavoriteRelationshipEntity.class, favoriteRelationshipEntityKey);
+        List<FavoriteRelationshipEntity> resultList = query.getResultList();
+        if (!resultList.isEmpty()) {
+            return (resultList.get(0));
+        } else {
+            return null;
+        }
     }
 
     protected boolean isNotEmpty(List<?> list) {
