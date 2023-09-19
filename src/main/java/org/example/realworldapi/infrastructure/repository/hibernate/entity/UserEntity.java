@@ -16,33 +16,35 @@ import java.util.UUID;
 @Table(name = "USERS")
 public class UserEntity {
 
-  @Id private UUID id;
+    @Id
+    @Column(unique = true, nullable = false, columnDefinition = "uuid")
+    private UUID id;
 
-  private String username;
-  private String bio;
-  private String image;
-  private String password;
-  private String email;
+    private String username;
+    private String bio;
+    private String image;
+    private String password;
+    private String email;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
-  private List<ArticleEntity> articles;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+    private List<ArticleEntity> articles;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-  private List<FollowRelationshipEntity> following;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<FollowRelationshipEntity> following;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "followed")
-  private List<FollowRelationshipEntity> followedBy;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "followed")
+    private List<FollowRelationshipEntity> followedBy;
 
-  public UserEntity(User user) {
-    this.id = user.getId();
-    update(user);
-  }
+    public UserEntity(User user) {
+        this.id = user.getId();
+        update(user);
+    }
 
-  public void update(User user) {
-    this.username = user.getUsername();
-    this.bio = user.getBio();
-    this.image = user.getImage();
-    this.password = user.getPassword();
-    this.email = user.getEmail();
-  }
+    public void update(User user) {
+        this.username = user.getUsername();
+        this.bio = user.getBio();
+        this.image = user.getImage();
+        this.password = user.getPassword();
+        this.email = user.getEmail();
+    }
 }

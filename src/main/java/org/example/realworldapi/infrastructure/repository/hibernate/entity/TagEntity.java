@@ -16,15 +16,17 @@ import java.util.UUID;
 @Table(name = "TAGS")
 public class TagEntity {
 
-  @Id private UUID id;
+    @Id
+    @Column(unique = true, nullable = false, columnDefinition = "uuid")
+    private UUID id;
 
-  private String name;
+    private String name;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "tag")
-  private List<TagRelationshipEntity> articlesTags;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tag")
+    private List<TagRelationshipEntity> articlesTags;
 
-  public TagEntity(Tag tag) {
-    this.id = tag.getId();
-    this.name = tag.getName();
-  }
+    public TagEntity(Tag tag) {
+        this.id = tag.getId();
+        this.name = tag.getName();
+    }
 }

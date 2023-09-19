@@ -1,16 +1,13 @@
 package org.example.realworldapi;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.slugify.Slugify;
 import de.hamburger_software.util.junit.microprofile.config.MicroProfileConfigExtension;
 import io.restassured.RestAssured;
-import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.example.realworldapi.infrastructure.provider.JwtTokenProvider;
 import org.example.realworldapi.infrastructure.repository.hibernate.entity.*;
 import org.example.realworldapi.infrastructure.web.provider.TokenProvider;
 import org.example.realworldapi.util.UserEntityUtils;
-import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,12 +18,9 @@ import java.util.List;
 import java.util.UUID;
 
 @EnableAutoWeld
-@AddBeanClasses(ObjectMapper.class)
 @ExtendWith(MicroProfileConfigExtension.class)
 public class AbstractIntegrationTest extends DatabaseIntegrationTest {
 
-    @Inject
-    protected ObjectMapper objectMapper;
     protected static TokenProvider tokenProvider;
     protected Slugify slugify = Slugify.builder().build();
 

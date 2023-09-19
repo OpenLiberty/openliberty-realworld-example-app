@@ -2,6 +2,7 @@ package org.example.realworldapi.infrastructure.repository;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.example.realworldapi.domain.model.user.FollowRelationship;
 import org.example.realworldapi.domain.model.user.FollowRelationshipRepository;
@@ -23,13 +24,11 @@ public class FollowRelationshipDAO extends AbstractDAO<FollowRelationshipEntity,
 
     @Override
     public boolean isFollowing(UUID currentUserId, UUID followedUserId) {
-        // TODO FIX QUERY
-        String jpql = "SELECT f FROM FOLLOW_RELATIONSHOP f WHERE primaryKey.user.id = :currentUserId and primaryKey.followed.id = :followedUserId";
-        TypedQuery<FollowRelationshipEntity> query = em.createQuery(jpql, FollowRelationshipEntity.class);
+        Query query = em.createNamedQuery("FREisFollowing");
         query.setParameter("currentUserId", currentUserId);
         query.setParameter("followedUserId", followedUserId);
 
-        List<FollowRelationshipEntity> resultList = query.getResultList();
+        List<FollowRelationshipEntity> resultList = (List<FollowRelationshipEntity>) query.getResultList();
         return !resultList.isEmpty();
     }
 

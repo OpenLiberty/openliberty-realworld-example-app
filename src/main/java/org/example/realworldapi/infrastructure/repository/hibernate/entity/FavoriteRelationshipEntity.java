@@ -12,6 +12,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "FAVORITE_RELATIONSHIP")
+@NamedQueries({
+        @NamedQuery(name = "FVREisFavorited", query = "select count(f) from FavoriteRelationshipEntity f where f.article.id = :articleId and f.user.id = :currentUserId"),
+        @NamedQuery(name = "FVREfavoritesCount", query = "select count(f) from FavoriteRelationshipEntity f where f.article.id = :articleId"),
+        @NamedQuery(name = "FVREfindByArticleAndUserID", query = "select f from FavoriteRelationshipEntity f where f.article.id = :articleId and f.user.id = :currentUserId")
+})
 public class FavoriteRelationshipEntity {
 
     @Id

@@ -17,21 +17,23 @@ import java.util.Objects;
 @Embeddable
 public class TagRelationshipEntityKey implements Serializable {
 
-  @ManyToOne private ArticleEntity article;
-  @ManyToOne private TagEntity tag;
+    @ManyToOne
+    private ArticleEntity article;
+    @ManyToOne
+    private TagEntity tag;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
 
-    if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    TagRelationshipEntityKey that = (TagRelationshipEntityKey) o;
-    return Objects.equals(article, that.article) && Objects.equals(tag, that.tag);
-  }
+        TagRelationshipEntityKey that = (TagRelationshipEntityKey) o;
+        return Objects.equals(article, that.article) && Objects.equals(tag, that.tag);
+    }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(article, tag);
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(article, tag);
+    }
 }

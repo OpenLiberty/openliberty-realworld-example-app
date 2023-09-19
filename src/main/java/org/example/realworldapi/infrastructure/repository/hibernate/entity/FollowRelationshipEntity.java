@@ -12,6 +12,9 @@ import java.util.Objects;
 @Entity
 @NoArgsConstructor
 @Table(name = "FOLLOW_RELATIONSHIP")
+@NamedQueries({
+        @NamedQuery(name = "FREisFollowing", query = "select f from FollowRelationshipEntity f where f.primaryKey.user.id = :currentUserId and f.primaryKey.followed.id = :followedUserId")
+})
 public class FollowRelationshipEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

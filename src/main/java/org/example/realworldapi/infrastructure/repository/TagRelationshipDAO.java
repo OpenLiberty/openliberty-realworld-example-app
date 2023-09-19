@@ -8,7 +8,6 @@ import org.example.realworldapi.domain.model.article.TagRelationship;
 import org.example.realworldapi.domain.model.article.TagRelationshipRepository;
 import org.example.realworldapi.domain.model.tag.Tag;
 import org.example.realworldapi.infrastructure.repository.hibernate.entity.EntityUtils;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.TagEntity;
 import org.example.realworldapi.infrastructure.repository.hibernate.entity.TagRelationshipEntity;
 import org.example.realworldapi.infrastructure.repository.hibernate.entity.TagRelationshipEntityKey;
 
@@ -35,7 +34,7 @@ public class TagRelationshipDAO
         Query query = em.createQuery(jpql);
         query.setParameter("articleId", article.getId());
 
-        List<TagEntity> tagEntities = query.getResultList();
+        List<TagRelationshipEntity> tagEntities = query.getResultList();
 
         // Map the results to Article objects
         return tagEntities.stream()

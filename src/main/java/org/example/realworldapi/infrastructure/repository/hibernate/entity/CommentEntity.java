@@ -18,27 +18,31 @@ import java.util.UUID;
 @Table(name = "COMMENTS")
 public class CommentEntity {
 
-  @Id private UUID id;
+    @Id
+    @Column(unique = true, nullable = false, columnDefinition = "uuid")
+    private UUID id;
 
-  @CreationTimestamp private LocalDateTime createdAt;
-  @UpdateTimestamp private LocalDateTime updatedAt;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
-  private String body;
+    private String body;
 
-  @ManyToOne
-  @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false)
-  private ArticleEntity article;
+    @ManyToOne
+    @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false)
+    private ArticleEntity article;
 
-  @ManyToOne
-  @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
-  private UserEntity author;
+    @ManyToOne
+    @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
+    private UserEntity author;
 
-  public CommentEntity(UserEntity author, ArticleEntity article, Comment comment) {
-    this.id = comment.getId();
-    this.body = comment.getBody();
-    this.createdAt = comment.getCreatedAt();
-    this.updatedAt = comment.getUpdatedAt();
-    this.article = article;
-    this.author = author;
-  }
+    public CommentEntity(UserEntity author, ArticleEntity article, Comment comment) {
+        this.id = comment.getId();
+        this.body = comment.getBody();
+        this.createdAt = comment.getCreatedAt();
+        this.updatedAt = comment.getUpdatedAt();
+        this.article = article;
+        this.author = author;
+    }
 }

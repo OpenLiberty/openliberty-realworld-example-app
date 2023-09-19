@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Secured {
-  Role[] value() default {};
+    Role[] value() default {};
 
-  boolean optional() default false;
+    boolean optional() default false;
 }

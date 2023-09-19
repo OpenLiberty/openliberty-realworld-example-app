@@ -1,7 +1,5 @@
 package org.example.realworldapi.application.web.resource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -20,7 +18,6 @@ import org.example.realworldapi.domain.feature.*;
 import org.example.realworldapi.domain.model.article.ArticleFilter;
 import org.example.realworldapi.domain.model.comment.DeleteCommentInput;
 import org.example.realworldapi.domain.model.constants.ValidationMessages;
-import org.example.realworldapi.infrastructure.web.qualifiers.NoWrapRootValueObjectMapper;
 import org.example.realworldapi.infrastructure.web.security.annotation.Secured;
 import org.example.realworldapi.infrastructure.web.security.profile.Role;
 
@@ -52,8 +49,6 @@ public class ArticlesResource {
     private FavoriteArticle favoriteArticle;
     @Inject
     private UnfavoriteArticle unfavoriteArticle;
-    @NoWrapRootValueObjectMapper
-    ObjectMapper objectMapper;
     @Inject
     private ResourceUtils resourceUtils;
 
@@ -64,15 +59,12 @@ public class ArticlesResource {
     public Response feed(
             @QueryParam("offset") int offset,
             @QueryParam("limit") int limit,
-            @Context SecurityContext securityContext)
-            throws JsonProcessingException {
+            @Context SecurityContext securityContext) {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         final var articlesFilter =
                 new ArticleFilter(offset, resourceUtils.getLimit(limit), loggedUserId, null, null, null);
         final var articlesPageResult = findMostRecentArticlesByFilter.handle(articlesFilter);
-        return Response.ok(
-                        objectMapper.writeValueAsString(
-                                resourceUtils.articlesResponse(articlesPageResult, loggedUserId)))
+        return Response.ok(resourceUtils.articlesResponse(articlesPageResult, loggedUserId))
                 .status(Response.Status.OK)
                 .build();
     }
@@ -86,16 +78,15 @@ public class ArticlesResource {
             @QueryParam("tag") List<String> tags,
             @QueryParam("author") List<String> authors,
             @QueryParam("favorited") List<String> favorited,
-            @Context SecurityContext securityContext)
-            throws JsonProcessingException {
+            @Context SecurityContext securityContext) {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         final var filter =
                 new ArticleFilter(
                         offset, resourceUtils.getLimit(limit), loggedUserId, tags, authors, favorited);
         final var articlesPageResult = findArticlesByFilter.handle(filter);
         return Response.ok(
-                        objectMapper.writeValueAsString(
-                                resourceUtils.articlesResponse(articlesPageResult, loggedUserId)))
+
+                        resourceUtils.articlesResponse(articlesPageResult, loggedUserId))
                 .status(Response.Status.OK)
                 .build();
     }
@@ -165,12 +156,11 @@ public class ArticlesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCommentsBySlug(
             @PathParam("slug") @NotBlank(message = ValidationMessages.SLUG_MUST_BE_NOT_BLANK) String slug,
-            @Context SecurityContext securityContext)
-            throws JsonProcessingException {
+            @Context SecurityContext securityContext) {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         final var comments = findCommentsByArticleSlug.handle(slug);
         return Response.ok(
-                        objectMapper.writeValueAsString(resourceUtils.commentsResponse(comments, loggedUserId)))
+                        resourceUtils.commentsResponse(comments, loggedUserId))
                 .status(Response.Status.OK)
                 .build();
     }

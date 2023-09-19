@@ -3,7 +3,6 @@ package org.example.realworldapi.infrastructure.repository;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.article.FavoriteRelationship;
 import org.example.realworldapi.domain.model.article.FavoriteRelationshipRepository;
@@ -16,34 +15,30 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Dependent
-public class FavoriteRelationshipDAO
-        extends AbstractDAO<FavoriteRelationshipEntity, FavoriteRelationshipEntityKey>
-        implements FavoriteRelationshipRepository {
+public class FavoriteRelationshipDAO extends AbstractDAO<FavoriteRelationshipEntity, FavoriteRelationshipEntityKey> implements FavoriteRelationshipRepository {
 
     @Inject
     private EntityUtils entityUtils;
 
     @Override
     public boolean isFavorited(Article article, UUID currentUserId) {
-        String jpql = "SELECT COUNT(f) FROM FavoriteRelationship f where f.id = :articleId and f.user.id = :currentUserId";
-        TypedQuery<Long> query = em.createQuery(jpql, Long.class);
-        Long qty = query.getSingleResult();
+        Query query = em.createNamedQuery("FVREisFavorited");
+        query.setParameter("articleId", article.getId());
+        query.setParameter("currentUserId", currentUserId);
+        Long qty = (Long) query.getSingleResult();
         return !(qty > 0);
     }
 
     @Override
     public long favoritesCount(Article article) {
-        String jpql = "SELECT COUNT(f) FROM FavoriteRelationship f where f.id = :articleId";
-        TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+        Query query = em.createNamedQuery("FVREfavoritesCount");
         query.setParameter("articleId", article.getId());
-        return query.getSingleResult();
+        return (Long) query.getSingleResult();
     }
 
     @Override
-    public Optional<FavoriteRelationship> findByArticleIdAndUserId(
-            UUID articleId, UUID currentUserId) {
-        String jpql = "SELECT f FROM FavoriteRelationship f where f.id = :articleId and f.user.id = :currentUserId";
-        Query query = em.createQuery(jpql);
+    public Optional<FavoriteRelationship> findByArticleIdAndUserId(UUID articleId, UUID currentUserId) {
+        Query query = em.createNamedQuery("FVREfindByArticleAndUserID");
         query.setParameter("articleId", articleId);
         query.setParameter("currentUserId", currentUserId);
 
@@ -65,8 +60,7 @@ public class FavoriteRelationshipDAO
 
     @Override
     public void delete(FavoriteRelationship favoriteRelationship) {
-        final var favoriteRelationshipEntity =
-                findFavoriteRelationshipEntityByKey(favoriteRelationship);
+        final var favoriteRelationshipEntity = findFavoriteRelationshipEntityByKey(favoriteRelationship);
         em.remove(favoriteRelationshipEntity);
     }
 }

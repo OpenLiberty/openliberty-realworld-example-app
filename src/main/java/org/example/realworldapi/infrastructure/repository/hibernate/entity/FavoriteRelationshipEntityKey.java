@@ -13,21 +13,23 @@ import java.util.Objects;
 @Embeddable
 public class FavoriteRelationshipEntityKey implements Serializable {
 
-  @ManyToOne private ArticleEntity article;
-  @ManyToOne private UserEntity user;
+    @ManyToOne
+    private ArticleEntity article;
+    @ManyToOne
+    private UserEntity user;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
 
-    if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    FavoriteRelationshipEntityKey that = (FavoriteRelationshipEntityKey) o;
-    return Objects.equals(user, that.user) && Objects.equals(article, that.article);
-  }
+        FavoriteRelationshipEntityKey that = (FavoriteRelationshipEntityKey) o;
+        return Objects.equals(user, that.user) && Objects.equals(article, that.article);
+    }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(user, article);
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, article);
+    }
 }
