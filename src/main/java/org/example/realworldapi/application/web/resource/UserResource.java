@@ -1,5 +1,7 @@
 package org.example.realworldapi.application.web.resource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -29,15 +31,17 @@ public class UserResource {
     private UpdateUser updateUser;
     @Inject
     private TokenProvider tokenProvider;
+    @Inject
+    private ObjectMapper objectMapper;
 
     @GET
     @Secured({Role.ADMIN, Role.USER})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser(@Context SecurityContext securityContext) {
+    public Response getUser(@Context SecurityContext securityContext) throws JsonProcessingException {
         final var userId = UUID.fromString(securityContext.getUserPrincipal().getName());
         final var user = findUserById.handle(userId);
         final var token = tokenProvider.createUserToken(user.getId().toString());
-        return Response.ok(new UserResponse(user, token)).status(Response.Status.OK).build();
+        return Response.ok(objectMapper.writeValueAsString(new UserResponse(user, token))).status(Response.Status.OK).build();
     }
 
     @PUT
@@ -48,10 +52,10 @@ public class UserResource {
     public Response update(
             @Context SecurityContext securityContext,
             @Valid @NotNull(message = ValidationMessages.REQUEST_BODY_MUST_BE_NOT_NULL)
-            UpdateUserRequest updateUserRequest) {
+            UpdateUserRequest updateUserRequest) throws JsonProcessingException {
         final var userId = UUID.fromString(securityContext.getUserPrincipal().getName());
         final var user = updateUser.handle(updateUserRequest.toUpdateUserInput(userId));
         final var token = tokenProvider.createUserToken(user.getId().toString());
-        return Response.ok(new UserResponse(user, token)).status(Response.Status.OK).build();
+        return Response.ok(objectMapper.writeValueAsString(new UserResponse(user, token))).status(Response.Status.OK).build();
     }
 }

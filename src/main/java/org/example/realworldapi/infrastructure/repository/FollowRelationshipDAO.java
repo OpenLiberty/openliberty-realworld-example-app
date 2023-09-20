@@ -54,9 +54,6 @@ public class FollowRelationshipDAO extends AbstractDAO<FollowRelationshipEntity,
         final var loggedUserEntity = findUserEntityById(loggedUser.getId());
         final var followedEntity = findUserEntityById(followedUser.getId());
 
-        //TODO test this code
-//        String jpql = "SELECT f FROM FollowRelationshipEntity f " + "WHERE f.primaryKey.loggedUser = :loggedUserEntity " + "AND f.primaryKey.followedUser = :followedUserEntity";
-//        TypedQuery<FollowRelationshipEntity> query = em.createQuery(jpql, FollowRelationshipEntity.class);
         Query query = em.createNamedQuery("FRE.findByPrimaryKey_UserAndPrimaryKey_Followed");
         query.setParameter("loggedUserEntity", loggedUserEntity);
         query.setParameter("followedUserEntity", followedEntity);

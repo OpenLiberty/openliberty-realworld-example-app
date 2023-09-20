@@ -1,6 +1,6 @@
 package org.example.realworldapi.application.web.model.response;
 
-import jakarta.json.bind.annotation.JsonbNillable;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,8 +9,7 @@ import org.example.realworldapi.domain.model.user.User;
 @Getter
 @Setter
 @NoArgsConstructor
-//@JsonRootName("user")
-@JsonbNillable(true)
+@JsonRootName("user")
 public class UserResponse {
 
     private String username;

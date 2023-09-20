@@ -95,7 +95,8 @@ public class UserDAO extends AbstractDAO<UserEntity, UUID>
 
     @Override
     public void update(User user) {
-        em.merge(user);
+        UserEntity userEntity = new UserEntity(user);
+        em.merge(userEntity);
     }
 
     @Override
