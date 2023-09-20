@@ -179,11 +179,11 @@ public class ArticlesResource {
     public Response createComment(
             @PathParam("slug") @NotBlank(message = ValidationMessages.SLUG_MUST_BE_NOT_BLANK) String slug,
             @Valid NewCommentRequest newCommentRequest,
-            @Context SecurityContext securityContext) {
+            @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         final var comment =
                 createComment.handle(newCommentRequest.toNewCommentInput(loggedUserId, slug));
-        return Response.ok(resourceUtils.commentResponse(comment, loggedUserId))
+        return Response.ok(objectMapper.writeValueAsString(resourceUtils.commentResponse(comment, loggedUserId)))
                 .status(Response.Status.OK)
                 .build();
     }

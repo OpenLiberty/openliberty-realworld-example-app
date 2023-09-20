@@ -2,6 +2,7 @@ package org.example.realworldapi.infrastructure.repository;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.comment.Comment;
@@ -30,8 +31,7 @@ public class CommentDAO extends AbstractDAO<CommentEntity, UUID>
 
     @Override
     public Optional<Comment> findByIdAndAuthor(UUID commentId, UUID authorId) {
-        String jpql = "SELECT c FROM Comment c WHERE c.id = :commentId and author.id = :authorId";
-        TypedQuery<CommentEntity> query = em.createQuery(jpql, CommentEntity.class);
+        Query query = em.createNamedQuery("CommentEntity.findByIdAndAuthor_Id");
         query.setParameter("commentId", commentId);
         query.setParameter("authorId", authorId);
 
@@ -52,8 +52,7 @@ public class CommentDAO extends AbstractDAO<CommentEntity, UUID>
 
     @Override
     public List<Comment> findCommentsByArticle(Article article) {
-        String jpql = "SELECT c FROM CommentEntity c WHERE article.id = :articleId";
-        TypedQuery<CommentEntity> query = em.createQuery(jpql, CommentEntity.class);
+        Query query = em.createNamedQuery("CommentEntity.findByArticle_Id");
         query.setParameter("articleId", article.getId());
 
         List<CommentEntity> resultList = query.getResultList();

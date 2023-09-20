@@ -16,6 +16,10 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Table(name = "COMMENTS")
+@NamedQueries({
+        @NamedQuery(name = "CommentEntity.findByArticle_Id", query = "select c from CommentEntity c where c.article.id = :articleId"),
+        @NamedQuery(name = "CommentEntity.findByIdAndAuthor_Id", query = "select c from CommentEntity c where c.id = :commentId and c.author.id = :authorId")
+})
 public class CommentEntity {
 
     @Id
