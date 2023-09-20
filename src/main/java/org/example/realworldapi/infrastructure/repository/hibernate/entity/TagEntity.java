@@ -14,6 +14,9 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Table(name = "TAGS")
+@NamedQueries({
+        @NamedQuery(name = "TagEntity.findByNamesIgnoreCase", query = "select t from TagEntity t where upper(t.name) in :names")
+})
 public class TagEntity {
 
     @Id

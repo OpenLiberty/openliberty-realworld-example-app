@@ -144,7 +144,7 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
     public PageResult<Article> findArticlesByFilter(ArticleFilter filter) {
         Map<String, Object> params = new LinkedHashMap<>();
         SimpleQueryBuilder findArticlesQueryBuilder = new SimpleQueryBuilder();
-        findArticlesQueryBuilder.addQueryStatement("select articles from ArticleEntity as articles");
+        findArticlesQueryBuilder.addQueryStatement("select a from ArticleEntity a");
         configFilterFindArticlesQueryBuilder(
                 findArticlesQueryBuilder,
                 filter.getTags(),
@@ -153,7 +153,7 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
                 params);
 
         String jpql = findArticlesQueryBuilder.toQueryString();
-        jpql = jpql + " ORDER BY articles.createdAt DESC, articles.updatetAt DESC;";
+        jpql = jpql + " ORDER BY a.createdAt DESC, a.updatedAt DESC";
         Query query = em.createQuery(jpql);
 
         // Handle paging
@@ -229,19 +229,19 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
 
         findArticlesQueryBuilder.updateQueryStatementConditional(
                 isNotEmpty(tags),
-                "inner join articles.tags as tags inner join tags.primaryKey.tag as tag",
+                "inner join a.tags t inner join t.primaryKey.tag as tag",
                 "upper(tag.name) in (:tags)",
                 () -> params.put("tags", toUpperCase(tags)));
 
         findArticlesQueryBuilder.updateQueryStatementConditional(
                 isNotEmpty(authors),
-                "inner join articles.author as authors",
+                "inner join a.author as authors",
                 "upper(authors.username) in (:authors)",
                 () -> params.put("authors", toUpperCase(authors)));
 
         findArticlesQueryBuilder.updateQueryStatementConditional(
                 isNotEmpty(favorited),
-                "inner join articles.favorites as favorites inner join favorites.primaryKey.user as user",
+                "inner join a.favorites as favorites inner join favorites.primaryKey.user as user",
                 "upper(user.username) in (:favorites)",
                 () -> params.put("favorites", toUpperCase(favorited)));
     }

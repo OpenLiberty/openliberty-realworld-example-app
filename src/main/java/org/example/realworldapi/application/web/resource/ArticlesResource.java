@@ -1,5 +1,7 @@
 package org.example.realworldapi.application.web.resource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -51,6 +53,9 @@ public class ArticlesResource {
     private UnfavoriteArticle unfavoriteArticle;
     @Inject
     private ResourceUtils resourceUtils;
+    @Inject
+    ObjectMapper objectMapper;
+
 
     @GET
     @Path("/feed")
@@ -59,7 +64,7 @@ public class ArticlesResource {
     public Response feed(
             @QueryParam("offset") int offset,
             @QueryParam("limit") int limit,
-            @Context SecurityContext securityContext) {
+            @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         final var articlesFilter =
                 new ArticleFilter(offset, resourceUtils.getLimit(limit), loggedUserId, null, null, null);
@@ -99,10 +104,10 @@ public class ArticlesResource {
     public Response create(
             @Valid @NotNull(message = ValidationMessages.REQUEST_BODY_MUST_BE_NOT_NULL)
             NewArticleRequest newArticleRequest,
-            @Context SecurityContext securityContext) {
+            @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         final var article = createArticle.handle(newArticleRequest.toNewArticleInput(loggedUserId));
-        return Response.ok(resourceUtils.articleResponse(article, loggedUserId))
+        return Response.ok(objectMapper.writeValueAsString(resourceUtils.articleResponse(article, loggedUserId)))
                 .status(Response.Status.CREATED)
                 .build();
     }
@@ -204,11 +209,11 @@ public class ArticlesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response favoriteArticle(
             @PathParam("slug") @NotBlank(message = ValidationMessages.SLUG_MUST_BE_NOT_BLANK) String slug,
-            @Context SecurityContext securityContext) {
+            @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         favoriteArticle.handle(slug, loggedUserId);
         final var article = findArticleBySlug.handle(slug);
-        return Response.ok(resourceUtils.articleResponse(article, loggedUserId))
+        return Response.ok(objectMapper.writeValueAsString(resourceUtils.articleResponse(article, loggedUserId)))
                 .status(Response.Status.OK)
                 .build();
     }
@@ -220,11 +225,11 @@ public class ArticlesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response unfavoriteArticle(
             @PathParam("slug") @NotBlank(message = ValidationMessages.SLUG_MUST_BE_NOT_BLANK) String slug,
-            @Context SecurityContext securityContext) {
+            @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         unfavoriteArticle.handle(slug, loggedUserId);
         final var article = findArticleBySlug.handle(slug);
-        return Response.ok(resourceUtils.articleResponse(article, loggedUserId))
+        return Response.ok(objectMapper.writeValueAsString(resourceUtils.articleResponse(article, loggedUserId)))
                 .status(Response.Status.OK)
                 .build();
     }

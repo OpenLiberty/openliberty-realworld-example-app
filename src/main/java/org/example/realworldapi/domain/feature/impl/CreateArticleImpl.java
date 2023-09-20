@@ -39,8 +39,11 @@ public class CreateArticleImpl implements CreateArticle {
                         newArticleInput.getBody(),
                         author);
         articleRepository.save(article);
-        final var tags = findTagsByNameCreateIfNotExists.handle(newArticleInput.getTagList());
-        createTagRelationship(article, tags);
+        List<String> tagList = newArticleInput.getTagList();
+        if (tagList != null && !tagList.isEmpty()) {
+            final var tags = findTagsByNameCreateIfNotExists.handle(newArticleInput.getTagList());
+            createTagRelationship(article, tags);
+        }
         return article;
     }
 

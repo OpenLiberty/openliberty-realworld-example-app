@@ -2,6 +2,7 @@ package org.example.realworldapi.infrastructure.repository;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.example.realworldapi.domain.model.tag.Tag;
 import org.example.realworldapi.domain.model.tag.TagRepository;
@@ -52,12 +53,13 @@ public class TagDAO extends AbstractDAO<TagEntity, UUID>
     @Override
     public List<Tag> findByNames(List<String> names) {
 
-        String jpql = "SELECT t FROM TagEntity t WHERE UPPER(t.name) in :names";
-        TypedQuery<TagEntity> query = em.createQuery(jpql, TagEntity.class);
+        Query query = em.createNamedQuery("TagEntity.findByNamesIgnoreCase");
+        System.out.println("Name in: " + names);
         List<String> namesUpper = names.stream()
                 .map(String::toUpperCase)
-                .toList();
-        query.setParameter("name", namesUpper);
+                .collect(Collectors.toList());
+        System.out.println("Namelijst: " + namesUpper);
+        query.setParameter("names", namesUpper);
 
         List<TagEntity> resultList = query.getResultList();
         return resultList.stream().map(entityUtils::tag).collect(Collectors.toList());
