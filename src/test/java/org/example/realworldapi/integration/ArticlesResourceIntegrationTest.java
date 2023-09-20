@@ -577,7 +577,7 @@ public class ArticlesResourceIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     public void
-    givenExistentArticle_whenExecuteFaroriteArticleEndpoint_shouldReturnFavoritedArticleWithStatusCode200() {
+    givenExistentArticle_whenExecuteFavoriteArticleEndpoint_shouldReturnFavoritedArticleWithStatusCode200() {
 
         final var loggedUser =
                 createUserEntity("loggedUser", "loggeduser@mail.com", "bio", "image", "loggeduser123");
@@ -620,7 +620,7 @@ public class ArticlesResourceIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     public void
-    givenExistentArticleFavorited_whenExecuteUnfaroriteArticleEndpoint_shouldReturnUnfavoritedArticleWithStatusCode200() {
+    givenExistentArticleFavorited_whenExecuteUnfavoriteArticleEndpoint_shouldReturnUnfavoritedArticleWithStatusCode200() {
 
         final var loggedUser =
                 createUserEntity("loggedUser", "loggeduser@mail.com", "bio", "image", "loggeduser123");

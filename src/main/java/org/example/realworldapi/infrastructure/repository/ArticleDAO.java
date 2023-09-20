@@ -73,8 +73,7 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
 
     @Override
     public Optional<Article> findByAuthorAndSlug(UUID authorId, String slug) {
-        String jpql = "SELECT a FROM ArticleEntity a WHERE UPPER(a.slug) = :slug and author.id = :authorId";
-        TypedQuery<ArticleEntity> query = em.createQuery(jpql, ArticleEntity.class);
+        Query query = em.createNamedQuery("ArticleEntity.findBySlugIgnoreCaseAndAuthor_Id");
         query.setParameter("slug", slug.toUpperCase().trim());
         query.setParameter("authorId", authorId);
 

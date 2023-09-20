@@ -13,9 +13,12 @@ import java.util.Objects;
 @NoArgsConstructor
 @Table(name = "FOLLOW_RELATIONSHIP")
 @NamedQueries({
-        @NamedQuery(name = "FREisFollowing", query = "select f from FollowRelationshipEntity f where f.primaryKey.user.id = :currentUserId and f.primaryKey.followed.id = :followedUserId")
+        @NamedQuery(name = "FREisFollowing", query = "select f from FollowRelationshipEntity f where f.primaryKey.user.id = :currentUserId and f.primaryKey.followed.id = :followedUserId"),
+        @NamedQuery(name = "FRE.findByPrimaryKey_UserAndPrimaryKey_Followed", query = "select f from FollowRelationshipEntity f where f.primaryKey.user = :loggedUserEntity and f.primaryKey.followed = :followedUserEntity")
 })
 public class FollowRelationshipEntity {
+
+//    SELECT f FROM FollowRelationshipEntity f " + "WHERE f.primaryKey.loggedUser = :loggedUserEntity " + "AND f.primaryKey.followedUser = :followedUserEntity
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -117,9 +117,9 @@ public class ArticlesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findBySlug(
             @PathParam("slug") @NotBlank(message = ValidationMessages.SLUG_MUST_BE_NOT_BLANK)
-            String slug) {
+            String slug) throws JsonProcessingException {
         final var article = findArticleBySlug.handle(slug);
-        return Response.ok(resourceUtils.articleResponse(article, null))
+        return Response.ok(objectMapper.writeValueAsString(resourceUtils.articleResponse(article, null)))
                 .status(Response.Status.OK)
                 .build();
     }
@@ -133,11 +133,11 @@ public class ArticlesResource {
     public Response update(
             @PathParam("slug") @NotBlank String slug,
             @Valid @NotNull UpdateArticleRequest updateArticleRequest,
-            @Context SecurityContext securityContext) {
+            @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         final var updatedArticle =
                 updateArticleBySlug.handle(updateArticleRequest.toUpdateArticleInput(loggedUserId, slug));
-        return Response.ok(resourceUtils.articleResponse(updatedArticle, null))
+        return Response.ok(objectMapper.writeValueAsString(resourceUtils.articleResponse(updatedArticle, null)))
                 .status(Response.Status.OK)
                 .build();
     }

@@ -1,5 +1,7 @@
 package org.example.realworldapi.application.web.resource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
@@ -24,6 +26,8 @@ public class ProfilesResource {
     private UnfollowUserByUsername unfollowUserByUsername;
     @Inject
     private ResourceUtils resourceUtils;
+    @Inject
+    private ObjectMapper objectMapper;
 
     @GET
     @Secured(optional = true)
@@ -32,10 +36,10 @@ public class ProfilesResource {
     public Response getProfile(
             @PathParam("username") @NotBlank(message = ValidationMessages.USERNAME_MUST_BE_NOT_BLANK)
             String username,
-            @Context SecurityContext securityContext) {
+            @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         final var profileResponse = resourceUtils.profileResponse(username, loggedUserId);
-        return Response.ok(profileResponse).status(Response.Status.OK).build();
+        return Response.ok(objectMapper.writeValueAsString(profileResponse)).status(Response.Status.OK).build();
     }
 
     @POST
@@ -46,10 +50,10 @@ public class ProfilesResource {
     public Response follow(
             @PathParam("username") @NotBlank(message = ValidationMessages.USERNAME_MUST_BE_NOT_BLANK)
             String username,
-            @Context SecurityContext securityContext) {
+            @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         followUserByUsername.handle(loggedUserId, username);
-        return Response.ok(resourceUtils.profileResponse(username, loggedUserId))
+        return Response.ok(objectMapper.writeValueAsString(resourceUtils.profileResponse(username, loggedUserId)))
                 .status(Response.Status.OK)
                 .build();
     }
@@ -62,10 +66,10 @@ public class ProfilesResource {
     public Response unfollow(
             @PathParam("username") @NotBlank(message = ValidationMessages.USERNAME_MUST_BE_NOT_BLANK)
             String username,
-            @Context SecurityContext securityContext) {
+            @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         unfollowUserByUsername.handle(loggedUserId, username);
-        return Response.ok(resourceUtils.profileResponse(username, loggedUserId))
+        return Response.ok(objectMapper.writeValueAsString(resourceUtils.profileResponse(username, loggedUserId)))
                 .status(Response.Status.OK)
                 .build();
     }

@@ -3,7 +3,6 @@ package org.example.realworldapi.infrastructure.repository;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 import org.example.realworldapi.domain.model.user.FollowRelationship;
 import org.example.realworldapi.domain.model.user.FollowRelationshipRepository;
 import org.example.realworldapi.domain.model.user.User;
@@ -56,8 +55,9 @@ public class FollowRelationshipDAO extends AbstractDAO<FollowRelationshipEntity,
         final var followedEntity = findUserEntityById(followedUser.getId());
 
         //TODO test this code
-        String jpql = "SELECT f FROM FollowRelationshipEntity f " + "WHERE f.primaryKey.loggedUser = :loggedUserEntity " + "AND f.primaryKey.followedUser = :followedUserEntity";
-        TypedQuery<FollowRelationshipEntity> query = em.createQuery(jpql, FollowRelationshipEntity.class);
+//        String jpql = "SELECT f FROM FollowRelationshipEntity f " + "WHERE f.primaryKey.loggedUser = :loggedUserEntity " + "AND f.primaryKey.followedUser = :followedUserEntity";
+//        TypedQuery<FollowRelationshipEntity> query = em.createQuery(jpql, FollowRelationshipEntity.class);
+        Query query = em.createNamedQuery("FRE.findByPrimaryKey_UserAndPrimaryKey_Followed");
         query.setParameter("loggedUserEntity", loggedUserEntity);
         query.setParameter("followedUserEntity", followedEntity);
 
