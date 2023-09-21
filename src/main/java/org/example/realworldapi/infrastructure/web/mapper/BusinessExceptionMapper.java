@@ -1,5 +1,8 @@
 package org.example.realworldapi.infrastructure.web.mapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
@@ -12,6 +15,9 @@ import java.util.function.Function;
 
 @Provider
 public class BusinessExceptionMapper implements ExceptionMapper<BusinessException> {
+
+    @Inject
+    ObjectMapper objectMapper;
 
     private final Map<Class<? extends BusinessException>, Function<BusinessException, Response>>
             exceptionMapper;
@@ -38,25 +44,41 @@ public class BusinessExceptionMapper implements ExceptionMapper<BusinessExceptio
     }
 
     private Response notFound(BusinessException businessException) {
-        return Response.ok(errorResponse(businessException))
-                .status(Response.Status.NOT_FOUND.getStatusCode())
-                .build();
+        try {
+            return Response.ok(objectMapper.writeValueAsString(errorResponse(businessException)))
+                    .status(Response.Status.NOT_FOUND.getStatusCode())
+                    .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Response conflict(BusinessException businessException) {
-        return Response.ok(errorResponse(businessException))
-                .status(Response.Status.CONFLICT.getStatusCode())
-                .build();
+        try {
+            return Response.ok(objectMapper.writeValueAsString(errorResponse(businessException)))
+                    .status(Response.Status.CONFLICT.getStatusCode())
+                    .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Response unauthorized(BusinessException businessException) {
-        return Response.ok(errorResponse(businessException))
-                .status(Response.Status.UNAUTHORIZED.getStatusCode())
-                .build();
+        try {
+            return Response.ok(objectMapper.writeValueAsString(errorResponse(businessException)))
+                    .status(Response.Status.UNAUTHORIZED.getStatusCode())
+                    .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Response unprocessableEntity(BusinessException businessException) {
-        return Response.ok(errorResponse(businessException)).status(422).build();
+        try {
+            return Response.ok(objectMapper.writeValueAsString(errorResponse(businessException))).status(422).build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private ErrorResponse errorResponse(BusinessException businessException) {

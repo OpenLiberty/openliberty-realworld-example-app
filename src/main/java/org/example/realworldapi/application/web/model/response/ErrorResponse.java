@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@JsonRootName("error")
+@JsonRootName("errors")
 public class ErrorResponse {
 
     private List<String> body;

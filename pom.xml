@@ -129,7 +129,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M1</version>
+                <version>3.1.2</version>
                 <executions>
                     <execution>
                         <phase>test</phase>
@@ -163,7 +163,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M1</version>
+                <version>3.1.2</version>
                 <executions>
                     <execution>
                         <phase>integration-test</phase>
@@ -172,6 +172,7 @@
                             <goal>integration-test</goal>
                         </goals>
                         <configuration>
+                            <argLine>-Duser.language=en -Duser.region=GB</argLine>
                             <systemPropertyVariables>
                                 <backend.http.port>${backend.service.http.port}</backend.http.port>
                             </systemPropertyVariables>

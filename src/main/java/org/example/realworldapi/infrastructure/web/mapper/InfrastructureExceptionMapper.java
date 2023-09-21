@@ -1,5 +1,8 @@
 package org.example.realworldapi.infrastructure.web.mapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
@@ -14,6 +17,9 @@ import java.util.function.Function;
 
 @Provider
 public class InfrastructureExceptionMapper implements ExceptionMapper<InfrastructureException> {
+
+    @Inject
+    ObjectMapper objectMapper;
 
     private final Map<
             Class<? extends InfrastructureException>, Function<InfrastructureException, Response>>
@@ -35,15 +41,23 @@ public class InfrastructureExceptionMapper implements ExceptionMapper<Infrastruc
     }
 
     private Response forbidden(InfrastructureException infrastructureException) {
-        return Response.ok(errorResponse(Response.Status.FORBIDDEN.toString()))
-                .status(Response.Status.FORBIDDEN)
-                .build();
+        try {
+            return Response.ok(objectMapper.writeValueAsString(errorResponse(Response.Status.FORBIDDEN.toString())))
+                    .status(Response.Status.FORBIDDEN)
+                    .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Response unauthorized(InfrastructureException infrastructureException) {
-        return Response.ok(errorResponse(Response.Status.UNAUTHORIZED.toString()))
-                .status(Response.Status.UNAUTHORIZED)
-                .build();
+        try {
+            return Response.ok(objectMapper.writeValueAsString(errorResponse(Response.Status.UNAUTHORIZED.toString())))
+                    .status(Response.Status.UNAUTHORIZED)
+                    .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private ErrorResponse errorResponse(String message) {

@@ -1,5 +1,7 @@
 package org.example.realworldapi.application.web.resource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -32,6 +34,8 @@ public class UsersResource {
     private LoginUser loginUser;
     @Inject
     private TokenProvider tokenProvider;
+    @Inject
+    private ObjectMapper objectMapper;
 
     @POST
     @Transactional
@@ -40,10 +44,10 @@ public class UsersResource {
     public Response create(
             @Valid @NotNull(message = ValidationMessages.REQUEST_BODY_MUST_BE_NOT_NULL)
             NewUserRequest newUserRequest,
-            @Context SecurityException context) {
+            @Context SecurityException context) throws JsonProcessingException {
         final var user = createUser.handle(newUserRequest.toCreateUserInput());
         final var token = tokenProvider.createUserToken(user.getId().toString());
-        return Response.ok(new UserResponse(user, token)).status(Response.Status.CREATED).build();
+        return Response.ok(objectMapper.writeValueAsString(new UserResponse(user, token))).status(Response.Status.CREATED).build();
     }
 
     @POST
@@ -52,7 +56,7 @@ public class UsersResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(
             @Valid @NotNull(message = ValidationMessages.REQUEST_BODY_MUST_BE_NOT_NULL)
-            LoginRequest loginRequest) {
+            LoginRequest loginRequest) throws JsonProcessingException {
         User user;
         try {
             user = loginUser.handle(loginRequest.toLoginUserInput());
@@ -60,6 +64,6 @@ public class UsersResource {
             throw new UnauthorizedException();
         }
         final var token = tokenProvider.createUserToken(user.getId().toString());
-        return Response.ok(new UserResponse(user, token)).status(Response.Status.OK).build();
+        return Response.ok(objectMapper.writeValueAsString(new UserResponse(user, token))).status(Response.Status.OK).build();
     }
 }
