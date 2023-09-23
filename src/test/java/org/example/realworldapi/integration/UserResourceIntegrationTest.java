@@ -66,8 +66,7 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     public void
-    givenARequestWithoutAuthorizationHeader_whenExecuteGetUserEndpoint_shouldReturnUnauthorized()
-            throws JsonProcessingException {
+    givenARequestWithoutAuthorizationHeader_whenExecuteGetUserEndpoint_shouldReturnUnauthorized() {
 
         final var user = UserEntityUtils.create("user1", "user1@mail.com", "123");
 
@@ -81,8 +80,7 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void givenAExistentUser_whenExecuteUpdateUserEndpoint_shouldReturnUpdatedUser()
-            throws JsonProcessingException {
+    public void givenAExistentUser_whenExecuteUpdateUserEndpoint_shouldReturnUpdatedUser() {
 
         final var user = createUserEntity("user1", "user1@mail.com", "bio", "image", "123");
 
@@ -117,8 +115,7 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void givenAExistentUser_whenExecuteUpdateUserEndpointWithEmptyBody_shouldReturn422()
-            throws JsonProcessingException {
+    public void givenAExistentUser_whenExecuteUpdateUserEndpointWithEmptyBody_shouldReturn422() {
 
         final var user = createUserEntity("user1", "user1@mail.com", "bio", "image", "123");
 
@@ -137,8 +134,7 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void givenAnotherExistingUsername_whenExecuteUpdateUserEndpoint_shouldReturn409()
-            throws JsonProcessingException {
+    public void givenAnotherExistingUsername_whenExecuteUpdateUserEndpoint_shouldReturn409() {
 
         final var otherUser = createUserEntity("user", "user@mail.com", "bio", "image", "123");
 
@@ -161,8 +157,7 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void givenAnotherExistingEmail_whenExecuteUpdateUserEndpoint_shouldReturn409()
-            throws JsonProcessingException {
+    public void givenAnotherExistingEmail_whenExecuteUpdateUserEndpoint_shouldReturn409() {
 
         final var otherUser = createUserEntity("user", "user@mail.com", "bio", "image", "123");
 
@@ -206,8 +201,8 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void givenAExistentUser_whenExecuteUpdateUserEndpointWithInvalidEmail_shouldReturn422()
-            throws JsonProcessingException {
+//    @DefaultLocale(language = "en")
+    public void givenAExistentUser_whenExecuteUpdateUserEndpointWithInvalidEmail_shouldReturn422() {
 
         final var user = createUserEntity("user1", "user1@mail.com", "bio", "image", "123");
 

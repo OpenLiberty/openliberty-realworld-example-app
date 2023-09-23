@@ -21,8 +21,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "ARTICLES")
 @NamedQueries({
-        @NamedQuery(name = "ArticleEntity.findBySlugIgnoreCaseAndAuthor_Id", query = "select a from ArticleEntity a where upper(a.slug) = :slug and a.author.id = :authorId")
-})
+        @NamedQuery(name = "ArticleEntity.findBySlugIgnoreCaseAndAuthor_Id", query = "select a from ArticleEntity a where upper(a.slug) = :slug and a.author.id = :authorId")})
 public class ArticleEntity {
 
     @Id

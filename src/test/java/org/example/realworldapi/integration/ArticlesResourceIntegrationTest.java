@@ -278,7 +278,8 @@ public class ArticlesResourceIntegrationTest extends AbstractIntegrationTest {
                 .get(ARTICLES_PATH)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body(
+                .body("articles.size()",
+                        is(5),
                         "articles[0]",
                         hasKey("slug"),
                         "articles[0]",

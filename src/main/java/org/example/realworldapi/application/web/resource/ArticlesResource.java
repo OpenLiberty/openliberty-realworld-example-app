@@ -12,9 +12,9 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
-import org.example.realworldapi.application.web.model.request.NewArticleRequest;
-import org.example.realworldapi.application.web.model.request.NewCommentRequest;
-import org.example.realworldapi.application.web.model.request.UpdateArticleRequest;
+import org.example.realworldapi.application.web.model.request.NewArticleRequestWrapper;
+import org.example.realworldapi.application.web.model.request.NewCommentRequestWrapper;
+import org.example.realworldapi.application.web.model.request.UpdateArticleRequestWrapper;
 import org.example.realworldapi.application.web.resource.utils.ResourceUtils;
 import org.example.realworldapi.domain.feature.*;
 import org.example.realworldapi.domain.model.article.ArticleFilter;
@@ -103,10 +103,10 @@ public class ArticlesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(
             @Valid @NotNull(message = ValidationMessages.REQUEST_BODY_MUST_BE_NOT_NULL)
-            NewArticleRequest newArticleRequest,
+            NewArticleRequestWrapper newArticleRequest,
             @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
-        final var article = createArticle.handle(newArticleRequest.toNewArticleInput(loggedUserId));
+        final var article = createArticle.handle(newArticleRequest.getArticle().toNewArticleInput(loggedUserId));
         return Response.ok(objectMapper.writeValueAsString(resourceUtils.articleResponse(article, loggedUserId)))
                 .status(Response.Status.CREATED)
                 .build();
@@ -132,11 +132,11 @@ public class ArticlesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(
             @PathParam("slug") @NotBlank String slug,
-            @Valid @NotNull UpdateArticleRequest updateArticleRequest,
+            @Valid @NotNull UpdateArticleRequestWrapper updateArticleRequest,
             @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         final var updatedArticle =
-                updateArticleBySlug.handle(updateArticleRequest.toUpdateArticleInput(loggedUserId, slug));
+                updateArticleBySlug.handle(updateArticleRequest.getArticle().toUpdateArticleInput(loggedUserId, slug));
         return Response.ok(objectMapper.writeValueAsString(resourceUtils.articleResponse(updatedArticle, null)))
                 .status(Response.Status.OK)
                 .build();
@@ -178,11 +178,11 @@ public class ArticlesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createComment(
             @PathParam("slug") @NotBlank(message = ValidationMessages.SLUG_MUST_BE_NOT_BLANK) String slug,
-            @Valid NewCommentRequest newCommentRequest,
+            @Valid NewCommentRequestWrapper newCommentRequest,
             @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         final var comment =
-                createComment.handle(newCommentRequest.toNewCommentInput(loggedUserId, slug));
+                createComment.handle(newCommentRequest.getComment().toNewCommentInput(loggedUserId, slug));
         return Response.ok(objectMapper.writeValueAsString(resourceUtils.commentResponse(comment, loggedUserId)))
                 .status(Response.Status.OK)
                 .build();

@@ -11,7 +11,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
-import org.example.realworldapi.application.web.model.request.UpdateUserRequest;
+import org.example.realworldapi.application.web.model.request.UpdateUserRequestWrapper;
 import org.example.realworldapi.application.web.model.response.UserResponse;
 import org.example.realworldapi.domain.feature.FindUserById;
 import org.example.realworldapi.domain.feature.UpdateUser;
@@ -52,9 +52,9 @@ public class UserResource {
     public Response update(
             @Context SecurityContext securityContext,
             @Valid @NotNull(message = ValidationMessages.REQUEST_BODY_MUST_BE_NOT_NULL)
-            UpdateUserRequest updateUserRequest) throws JsonProcessingException {
+            UpdateUserRequestWrapper updateUserRequest) throws JsonProcessingException {
         final var userId = UUID.fromString(securityContext.getUserPrincipal().getName());
-        final var user = updateUser.handle(updateUserRequest.toUpdateUserInput(userId));
+        final var user = updateUser.handle(updateUserRequest.getUser().toUpdateUserInput(userId));
         final var token = tokenProvider.createUserToken(user.getId().toString());
         return Response.ok(objectMapper.writeValueAsString(new UserResponse(user, token))).status(Response.Status.OK).build();
     }

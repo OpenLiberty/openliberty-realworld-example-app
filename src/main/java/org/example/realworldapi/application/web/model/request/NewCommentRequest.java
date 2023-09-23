@@ -11,8 +11,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-//@JsonRootName("comment")
-@JsonbNillable(true)
 public class NewCommentRequest {
     @NotBlank(message = ValidationMessages.BODY_MUST_BE_NOT_BLANK)
     private String body;

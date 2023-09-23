@@ -15,8 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
-        implements ArticleRepository {
+public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID> implements ArticleRepository {
 
     @Inject
     private EntityUtils entityUtils;
@@ -94,11 +93,7 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
 
     @Override
     public PageResult<Article> findMostRecentArticlesByFilter(ArticleFilter articleFilter) {
-        String jpql = "SELECT a FROM ArticleEntity a " +
-                "JOIN a.author author " +
-                "JOIN author.followedBy followedBy " +
-                "WHERE followedBy.user.id = :loggedUserId " +
-                "ORDER BY a.createdAt DESC, a.updatedAt DESC";
+        String jpql = "SELECT a FROM ArticleEntity a " + "JOIN a.author author " + "JOIN author.followedBy followedBy " + "WHERE followedBy.user.id = :loggedUserId " + "ORDER BY a.createdAt DESC, a.updatedAt DESC";
 
         // Create the query and set parameters
         Query query = em.createQuery(jpql);
@@ -114,9 +109,7 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
         List<ArticleEntity> articlesEntity = query.getResultList();
 
         // Map the results to Article objects
-        List<Article> articlesResult = articlesEntity.stream()
-                .map(entityUtils::article)
-                .collect(Collectors.toList());
+        List<Article> articlesResult = articlesEntity.stream().map(entityUtils::article).collect(Collectors.toList());
 
         // Calculate the total count (you can create a separate method for this)
         long total = countTotalArticles(articleFilter.getLoggedUserId());
@@ -126,10 +119,7 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
 
     private long countTotalArticles(UUID loggedUserId) {
         // Create a count query
-        String countJpql = "SELECT COUNT(a) FROM ArticleEntity a " +
-                "JOIN a.author author " +
-                "JOIN author.followedBy followedBy " +
-                "WHERE followedBy.user.id = :loggedUserId";
+        String countJpql = "SELECT COUNT(a) FROM ArticleEntity a " + "JOIN a.author author " + "JOIN author.followedBy followedBy " + "WHERE followedBy.user.id = :loggedUserId";
 
         // Create the query and set parameters
         Query countQuery = em.createQuery(countJpql);
@@ -143,105 +133,60 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID>
     public PageResult<Article> findArticlesByFilter(ArticleFilter filter) {
         Map<String, Object> params = new LinkedHashMap<>();
         SimpleQueryBuilder findArticlesQueryBuilder = new SimpleQueryBuilder();
+        SimpleQueryBuilder countArticlesQueryBuilder = new SimpleQueryBuilder();
         findArticlesQueryBuilder.addQueryStatement("select a from ArticleEntity a");
-        configFilterFindArticlesQueryBuilder(
-                findArticlesQueryBuilder,
-                filter.getTags(),
-                filter.getAuthors(),
-                filter.getFavorited(),
-                params);
+        countArticlesQueryBuilder.addQueryStatement("select count(a) from ArticleEntity a");
+        configFilterFindArticlesQueryBuilder(findArticlesQueryBuilder, filter.getTags(), filter.getAuthors(), filter.getFavorited(), params);
+
+        configFilterFindArticlesQueryBuilder(countArticlesQueryBuilder, filter.getTags(), filter.getAuthors(), filter.getFavorited(), params);
 
         String jpql = findArticlesQueryBuilder.toQueryString();
+        String countJpql = countArticlesQueryBuilder.toQueryString();
         jpql = jpql + " ORDER BY a.createdAt DESC, a.updatedAt DESC";
         Query query = em.createQuery(jpql);
+        Query countQuery = em.createQuery(countJpql);
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+            countQuery.setParameter(entry.getKey(), entry.getValue());
+        }
 
-        // Handle paging
         int offset = filter.getOffset();
         int limit = filter.getLimit();
         query.setFirstResult(offset);
         query.setMaxResults(limit);
 
-        // Execute the query and fetch the results
         List<ArticleEntity> articlesEntity = query.getResultList();
+        long countArticleEntities = (long) countQuery.getSingleResult();
 
-        final var articlesResult =
-                articlesEntity.stream().map(entityUtils::article).toList();
-        final var total = count(filter.getTags(), filter.getAuthors(), filter.getFavorited());
-        return new PageResult<>(articlesResult, total);
+        final var articlesResult = articlesEntity.stream().map(entityUtils::article).toList();
+        return new PageResult<>(articlesResult, countArticleEntities);
     }
 
-    public long count(UUID loggedUserId) {
-//        TODO fix this query
-        String jpql = "from ArticleEntity as articles inner join articles.author as author inner join author.followedBy as followedBy where followedBy.user.id = :loggedUserId";
-        TypedQuery<ArticleEntity> query = em.createQuery(jpql, ArticleEntity.class);
-        query.setParameter("loggedUserId", loggedUserId);
+    private void configFilterFindArticlesQueryBuilder(SimpleQueryBuilder findArticlesQueryBuilder, List<String> tags, List<String> authors, List<String> favorited, Map<String, Object> params) {
 
-        List<ArticleEntity> resultList = query.getResultList();
-        return resultList.size();
-    }
+        List<String> tagsUpper = new ArrayList<>();
+        List<String> authorsUpper = new ArrayList<>();
+        List<String> favUpper = new ArrayList<>();
 
-    @Override
-//    TODO test this thourouglhy
-    public long count(List<String> tags, List<String> authors, List<String> favorited) {
-        StringBuilder jpql = new StringBuilder("SELECT COUNT(a) FROM ArticleEntity a");
-
-        if (!tags.isEmpty() || !authors.isEmpty() || !favorited.isEmpty()) {
-            jpql.append(" WHERE 1=1"); // To start building conditions
-
-            if (!tags.isEmpty()) {
-                jpql.append(" AND a.tags.name IN :tags");
-            }
-
-            if (!authors.isEmpty()) {
-                jpql.append(" AND a.author.username IN :authors");
-            }
-
-            if (!favorited.isEmpty()) {
-                jpql.append(" AND a.favorites.user.username IN :favorites");
-            }
+        if (isNotEmpty(tags)) {
+            tagsUpper = tags.stream().map(String::toUpperCase).toList();
         }
 
-        TypedQuery<Long> query = em.createQuery(jpql.toString(), Long.class);
-
-        if (!tags.isEmpty()) {
-            query.setParameter("tags", tags);
+        if (isNotEmpty(authors)) {
+            authorsUpper = authors.stream().map(String::toUpperCase).toList();
         }
 
-        if (!authors.isEmpty()) {
-            query.setParameter("authors", authors);
+        if (isNotEmpty(favorited)) {
+            favUpper = favorited.stream().map(String::toUpperCase).toList();
         }
 
-        if (!favorited.isEmpty()) {
-            query.setParameter("favorites", favorited);
-        }
+        List<String> finalTagsUpper = tagsUpper;
+        List<String> finalAuthorsUpper = authorsUpper;
+        List<String> finalFavsUpper = favUpper;
+        findArticlesQueryBuilder.updateQueryStatementConditional(isNotEmpty(tags), "inner join a.tags t inner join t.primaryKey.tag as tag", "upper(tag.name) in :tags", () -> params.put("tags", finalTagsUpper));
 
-        return query.getSingleResult();
-    }
+        findArticlesQueryBuilder.updateQueryStatementConditional(isNotEmpty(authors), "inner join a.author as authors", "upper(authors.username) in :authors", () -> params.put("authors", finalAuthorsUpper));
 
-    //    TODO refactor not needing code beneath
-    private void configFilterFindArticlesQueryBuilder(
-            SimpleQueryBuilder findArticlesQueryBuilder,
-            List<String> tags,
-            List<String> authors,
-            List<String> favorited,
-            Map<String, Object> params) {
-
-        findArticlesQueryBuilder.updateQueryStatementConditional(
-                isNotEmpty(tags),
-                "inner join a.tags t inner join t.primaryKey.tag as tag",
-                "upper(tag.name) in (:tags)",
-                () -> params.put("tags", toUpperCase(tags)));
-
-        findArticlesQueryBuilder.updateQueryStatementConditional(
-                isNotEmpty(authors),
-                "inner join a.author as authors",
-                "upper(authors.username) in (:authors)",
-                () -> params.put("authors", toUpperCase(authors)));
-
-        findArticlesQueryBuilder.updateQueryStatementConditional(
-                isNotEmpty(favorited),
-                "inner join a.favorites as favorites inner join favorites.primaryKey.user as user",
-                "upper(user.username) in (:favorites)",
-                () -> params.put("favorites", toUpperCase(favorited)));
+        findArticlesQueryBuilder.updateQueryStatementConditional(isNotEmpty(favorited), "inner join a.favorites as favorites inner join favorites.primaryKey.user as user", "upper(user.username) in :favorites", () -> params.put("favorites", finalFavsUpper));
     }
 }

@@ -112,6 +112,12 @@
             <version>4.0.0.Final</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit-pioneer</groupId>
+            <artifactId>junit-pioneer</artifactId>
+            <version>2.1.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -172,7 +178,6 @@
                             <goal>integration-test</goal>
                         </goals>
                         <configuration>
-                            <argLine>-Duser.language=en -Duser.region=GB</argLine>
                             <systemPropertyVariables>
                                 <backend.http.port>${backend.service.http.port}</backend.http.port>
                             </systemPropertyVariables>

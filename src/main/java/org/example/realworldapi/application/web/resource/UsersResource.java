@@ -13,8 +13,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.example.realworldapi.application.web.model.request.LoginRequest;
-import org.example.realworldapi.application.web.model.request.NewUserRequest;
+import org.example.realworldapi.application.web.model.request.LoginRequestWrapper;
+import org.example.realworldapi.application.web.model.request.NewUserRequestWrapper;
 import org.example.realworldapi.application.web.model.response.UserResponse;
 import org.example.realworldapi.domain.exception.InvalidPasswordException;
 import org.example.realworldapi.domain.exception.UserNotFoundException;
@@ -43,9 +43,9 @@ public class UsersResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(
             @Valid @NotNull(message = ValidationMessages.REQUEST_BODY_MUST_BE_NOT_NULL)
-            NewUserRequest newUserRequest,
+            NewUserRequestWrapper newUserRequest,
             @Context SecurityException context) throws JsonProcessingException {
-        final var user = createUser.handle(newUserRequest.toCreateUserInput());
+        final var user = createUser.handle(newUserRequest.getUser().toCreateUserInput());
         final var token = tokenProvider.createUserToken(user.getId().toString());
         return Response.ok(objectMapper.writeValueAsString(new UserResponse(user, token))).status(Response.Status.CREATED).build();
     }
@@ -56,10 +56,12 @@ public class UsersResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(
             @Valid @NotNull(message = ValidationMessages.REQUEST_BODY_MUST_BE_NOT_NULL)
-            LoginRequest loginRequest) throws JsonProcessingException {
+            LoginRequestWrapper loginRequest) throws JsonProcessingException {
         User user;
+
+        System.out.println("Request: " + loginRequest.toString());
         try {
-            user = loginUser.handle(loginRequest.toLoginUserInput());
+            user = loginUser.handle(loginRequest.getUser().toLoginUserInput());
         } catch (UserNotFoundException | InvalidPasswordException ex) {
             throw new UnauthorizedException();
         }

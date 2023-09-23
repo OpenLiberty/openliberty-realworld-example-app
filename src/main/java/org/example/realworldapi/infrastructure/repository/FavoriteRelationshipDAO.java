@@ -3,6 +3,7 @@ package org.example.realworldapi.infrastructure.repository;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.article.FavoriteRelationship;
 import org.example.realworldapi.domain.model.article.FavoriteRelationshipRepository;
@@ -26,7 +27,7 @@ public class FavoriteRelationshipDAO extends AbstractDAO<FavoriteRelationshipEnt
         query.setParameter("articleId", article.getId());
         query.setParameter("currentUserId", currentUserId);
         Long qty = (Long) query.getSingleResult();
-        return !(qty > 0);
+        return (qty > 0);
     }
 
     @Override

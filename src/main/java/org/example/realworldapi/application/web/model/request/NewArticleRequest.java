@@ -10,8 +10,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-//@JsonRootName("article")
-@JsonbNillable(true)
 public class NewArticleRequest {
 
     private String title;

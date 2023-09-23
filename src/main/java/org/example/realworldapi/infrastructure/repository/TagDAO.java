@@ -54,11 +54,9 @@ public class TagDAO extends AbstractDAO<TagEntity, UUID>
     public List<Tag> findByNames(List<String> names) {
 
         Query query = em.createNamedQuery("TagEntity.findByNamesIgnoreCase");
-        System.out.println("Name in: " + names);
         List<String> namesUpper = names.stream()
                 .map(String::toUpperCase)
                 .collect(Collectors.toList());
-        System.out.println("Namelijst: " + namesUpper);
         query.setParameter("names", namesUpper);
 
         List<TagEntity> resultList = query.getResultList();

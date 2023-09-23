@@ -12,8 +12,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-//@JsonRootName("article")
-@JsonbNillable(true)
 @AtLeastOneFieldMustBeNotNull
 public class UpdateArticleRequest {
 

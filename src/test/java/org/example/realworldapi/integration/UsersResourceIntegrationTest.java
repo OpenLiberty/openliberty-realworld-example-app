@@ -6,8 +6,10 @@ import org.apache.http.HttpStatus;
 import org.example.realworldapi.AbstractIntegrationTest;
 import org.example.realworldapi.application.web.model.request.LoginRequest;
 import org.example.realworldapi.application.web.model.request.NewUserRequest;
+import org.example.realworldapi.application.web.model.request.NewUserRequestWrapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.DefaultLocale;
 
 import static io.restassured.RestAssured.given;
 import static org.example.realworldapi.constants.TestConstants.API_PREFIX;
@@ -124,16 +126,20 @@ public class UsersResourceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void givenAnInvalidEmail_thenReturnErrorsWith422Code() throws JsonProcessingException {
+    @DefaultLocale(language = "en", country = "EN")
+    public void givenAnInvalidEmail_thenReturnErrorsWith422Code() {
 
         NewUserRequest newUser = new NewUserRequest();
         newUser.setUsername("username");
         newUser.setEmail("email");
         newUser.setPassword("user123");
 
+        NewUserRequestWrapper requestWrapper = new NewUserRequestWrapper();
+        requestWrapper.setUser(newUser);
+
         given()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(newUser)
+                .body(requestWrapper)
                 .when()
                 .post(USERS_RESOURCE_PATH)
                 .then()
