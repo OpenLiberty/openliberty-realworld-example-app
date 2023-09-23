@@ -19,12 +19,4 @@ public class LoginRequest {
     public LoginUserInput toLoginUserInput() {
         return new LoginUserInput(this.email, this.password);
     }
-
-    @Override
-    public String toString() {
-        return "LoginRequest{" +
-                "email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
 }

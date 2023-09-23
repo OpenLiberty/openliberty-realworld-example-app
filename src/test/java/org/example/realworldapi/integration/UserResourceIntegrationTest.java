@@ -1,10 +1,10 @@
 package org.example.realworldapi.integration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpStatus;
 import org.example.realworldapi.AbstractIntegrationTest;
 import org.example.realworldapi.application.web.model.request.UpdateUserRequest;
+import org.example.realworldapi.application.web.model.request.UpdateUserRequestWrapper;
 import org.example.realworldapi.util.UserEntityUtils;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -90,10 +90,12 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
         updateUserRequest.setUsername("user2");
         updateUserRequest.setEmail(user.getEmail());
 
+        UpdateUserRequestWrapper updateUserRequestWrapper = new UpdateUserRequestWrapper(updateUserRequest);
+
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION_HEADER, authorizationHeader)
-                .body(updateUserRequest)
+                .body(updateUserRequestWrapper)
                 .put(USER_RESOURCE_PATH)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
@@ -122,11 +124,12 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
         String authorizationHeader = AUTHORIZATION_HEADER_VALUE_PREFIX + token(user);
 
         UpdateUserRequest updateUserRequest = new UpdateUserRequest();
+        UpdateUserRequestWrapper updateUserRequestWrapper = new UpdateUserRequestWrapper(updateUserRequest);
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION_HEADER, authorizationHeader)
-                .body(updateUserRequest)
+                .body(updateUserRequestWrapper)
                 .put(USER_RESOURCE_PATH)
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
@@ -146,10 +149,12 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
         UpdateUserRequest updateUserRequest = new UpdateUserRequest();
         updateUserRequest.setUsername(otherUser.getUsername());
 
+        UpdateUserRequestWrapper updateUserRequestWrapper = new UpdateUserRequestWrapper(updateUserRequest);
+
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION_HEADER, authorizationHeader)
-                .body(updateUserRequest)
+                .body(updateUserRequestWrapper)
                 .put(USER_RESOURCE_PATH)
                 .then()
                 .statusCode(HttpStatus.SC_CONFLICT)
@@ -169,10 +174,12 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
         UpdateUserRequest updateUserRequest = new UpdateUserRequest();
         updateUserRequest.setEmail(otherUser.getEmail());
 
+        UpdateUserRequestWrapper updateUserRequestWrapper = new UpdateUserRequestWrapper(updateUserRequest);
+
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION_HEADER, authorizationHeader)
-                .body(updateUserRequest)
+                .body(updateUserRequestWrapper)
                 .put(USER_RESOURCE_PATH)
                 .then()
                 .statusCode(HttpStatus.SC_CONFLICT)
@@ -180,8 +187,7 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void givenAExistentUser_whenExecuteUpdateUserEndpointWithEmptyUsername_shouldReturn422()
-            throws JsonProcessingException {
+    public void givenAExistentUser_whenExecuteUpdateUserEndpointWithEmptyUsername_shouldReturn422() {
 
         final var user = createUserEntity("user1", "user1@mail.com", "bio", "image", "123");
 
@@ -190,10 +196,12 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
         UpdateUserRequest updateUserRequest = new UpdateUserRequest();
         updateUserRequest.setUsername("");
 
+        UpdateUserRequestWrapper updateUserRequestWrapper = new UpdateUserRequestWrapper(updateUserRequest);
+
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION_HEADER, authorizationHeader)
-                .body(updateUserRequest)
+                .body(updateUserRequestWrapper)
                 .put(USER_RESOURCE_PATH)
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
@@ -211,10 +219,12 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
         UpdateUserRequest updateUserRequest = new UpdateUserRequest();
         updateUserRequest.setEmail("email");
 
+        UpdateUserRequestWrapper updateArticleRequestWrapper = new UpdateUserRequestWrapper(updateUserRequest);
+
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION_HEADER, authorizationHeader)
-                .body(updateUserRequest)
+                .body(updateArticleRequestWrapper)
                 .put(USER_RESOURCE_PATH)
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
@@ -226,8 +236,7 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void givenAExistentUser_whenExecuteUpdateUserEndpointWithBlankUsername_shouldReturn422()
-            throws JsonProcessingException {
+    public void givenAExistentUser_whenExecuteUpdateUserEndpointWithBlankUsername_shouldReturn422() {
 
         final var user = createUserEntity("user1", "user1@mail.com", "bio", "image", "123");
 
@@ -236,10 +245,12 @@ public class UserResourceIntegrationTest extends AbstractIntegrationTest {
         UpdateUserRequest updateUserRequest = new UpdateUserRequest();
         updateUserRequest.setUsername(" ");
 
+        UpdateUserRequestWrapper updateUserRequestWrapper = new UpdateUserRequestWrapper(updateUserRequest);
+
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION_HEADER, authorizationHeader)
-                .body(updateUserRequest)
+                .body(updateUserRequestWrapper)
                 .put(USER_RESOURCE_PATH)
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)

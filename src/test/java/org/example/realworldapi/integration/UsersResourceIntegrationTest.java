@@ -1,15 +1,14 @@
 package org.example.realworldapi.integration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpStatus;
 import org.example.realworldapi.AbstractIntegrationTest;
 import org.example.realworldapi.application.web.model.request.LoginRequest;
+import org.example.realworldapi.application.web.model.request.LoginRequestWrapper;
 import org.example.realworldapi.application.web.model.request.NewUserRequest;
 import org.example.realworldapi.application.web.model.request.NewUserRequestWrapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.DefaultLocale;
 
 import static io.restassured.RestAssured.given;
 import static org.example.realworldapi.constants.TestConstants.API_PREFIX;
@@ -22,154 +21,87 @@ public class UsersResourceIntegrationTest extends AbstractIntegrationTest {
     private final String LOGIN_PATH = USERS_RESOURCE_PATH + "/login";
 
     @Test
-    public void
-    givenAValidUser_whenCallingRegisterUserEndpoint_thenReturnAnUserWithTokenFieldAndCode201()
-            throws JsonProcessingException {
+    public void givenAValidUser_whenCallingRegisterUserEndpoint_thenReturnAnUserWithTokenFieldAndCode201() {
 
-        NewUserRequest newUser = new NewUserRequest();
-        newUser.setUsername("user");
-        newUser.setEmail("user@mail.com");
-        newUser.setPassword("user123");
+        NewUserRequest newUserRequest = new NewUserRequest();
+        newUserRequest.setUsername("user");
+        newUserRequest.setEmail("user@mail.com");
+        newUserRequest.setPassword("user123");
 
-        given()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(newUser)
-                .when()
-                .post(USERS_RESOURCE_PATH)
-                .then()
-                .statusCode(HttpStatus.SC_CREATED)
-                .body(
-                        "user.id",
-                        Matchers.nullValue(),
-                        "user.password",
-                        Matchers.nullValue(),
-                        "user.username",
-                        Matchers.notNullValue(),
-                        "user.email",
-                        Matchers.notNullValue(),
-                        "user.token",
-                        Matchers.notNullValue(),
-                        "user.bio",
-                        Matchers.nullValue(),
-                        "user.image",
-                        Matchers.nullValue());
+        NewUserRequestWrapper newUserRequestWrapper = new NewUserRequestWrapper(newUserRequest);
+
+        given().contentType(MediaType.APPLICATION_JSON).body(newUserRequestWrapper).when().post(USERS_RESOURCE_PATH).then().statusCode(HttpStatus.SC_CREATED).body("user.id", Matchers.nullValue(), "user.password", Matchers.nullValue(), "user.username", Matchers.notNullValue(), "user.email", Matchers.notNullValue(), "user.token", Matchers.notNullValue(), "user.bio", Matchers.nullValue(), "user.image", Matchers.nullValue());
     }
 
     @Test
-    public void
-    givenAPersistedUser_whenCallingRegisterUserEndpointWithExistingEmail_thenReturnCode409()
-            throws JsonProcessingException {
+    public void givenAPersistedUser_whenCallingRegisterUserEndpointWithExistingEmail_thenReturnCode409() {
 
         String userPassword = "123";
 
         final var user = createUserEntity("user1", "user1@mail.com", "bio", "image", userPassword);
 
-        NewUserRequest newUser = new NewUserRequest();
-        newUser.setUsername("user2");
-        newUser.setEmail(user.getEmail());
-        newUser.setPassword("user123");
+        NewUserRequest newUserRequest = new NewUserRequest();
+        newUserRequest.setUsername("user2");
+        newUserRequest.setEmail(user.getEmail());
+        newUserRequest.setPassword("user123");
 
-        given()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(newUser)
-                .when()
-                .post(USERS_RESOURCE_PATH)
-                .then()
-                .statusCode(HttpStatus.SC_CONFLICT)
-                .body("errors.body", hasItems("email already exists"));
+        NewUserRequestWrapper newUserRequestWrapper = new NewUserRequestWrapper(newUserRequest);
+
+        given().contentType(MediaType.APPLICATION_JSON).body(newUserRequestWrapper).when().post(USERS_RESOURCE_PATH).then().statusCode(HttpStatus.SC_CONFLICT).body("errors.body", hasItems("email already exists"));
     }
 
     @Test
-    public void
-    givenAPersistedUser_whenCallingRegisterUserEndpointWithExistingUsername_thenReturnCode409()
-            throws JsonProcessingException {
+    public void givenAPersistedUser_whenCallingRegisterUserEndpointWithExistingUsername_thenReturnCode409() {
 
         String userPassword = "123";
 
         final var user = createUserEntity("user1", "user1@mail.com", "bio", "image", userPassword);
 
-        NewUserRequest newUser = new NewUserRequest();
-        newUser.setUsername(user.getUsername());
-        newUser.setEmail("user2@mail.com");
-        newUser.setPassword("user123");
+        NewUserRequest newUserRequest = new NewUserRequest();
+        newUserRequest.setUsername(user.getUsername());
+        newUserRequest.setEmail("user2@mail.com");
+        newUserRequest.setPassword("user123");
 
-        given()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(newUser)
-                .when()
-                .post(USERS_RESOURCE_PATH)
-                .then()
-                .statusCode(HttpStatus.SC_CONFLICT)
-                .body("errors.body", hasItems("username already exists"));
+        NewUserRequestWrapper newUserRequestWrapper = new NewUserRequestWrapper(newUserRequest);
+
+
+        given().contentType(MediaType.APPLICATION_JSON).body(newUserRequestWrapper).when().post(USERS_RESOURCE_PATH).then().statusCode(HttpStatus.SC_CONFLICT).body("errors.body", hasItems("username already exists"));
     }
 
     @Test
-    public void givenAnInvalidUser_thenReturnErrorsWith422Code() throws JsonProcessingException {
+    public void givenAnInvalidUser_thenReturnErrorsWith422Code() {
 
-        NewUserRequest newUser = new NewUserRequest();
+        NewUserRequest newUserRequest = new NewUserRequest();
+        NewUserRequestWrapper newUserRequestWrapper = new NewUserRequestWrapper(newUserRequest);
 
-        given()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(newUser)
-                .when()
-                .post(USERS_RESOURCE_PATH)
-                .then()
-                .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
-                .body(
-                        "errors.body",
-                        hasSize(3),
-                        "errors.body",
-                        hasItems(
-                                "username must be not blank",
-                                "email must be not blank",
-                                "password must be not blank"));
+        given().contentType(MediaType.APPLICATION_JSON).body(newUserRequestWrapper).when().post(USERS_RESOURCE_PATH).then().statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY).body("errors.body", hasSize(3), "errors.body", hasItems("username must be not blank", "email must be not blank", "password must be not blank"));
     }
 
     @Test
-    @DefaultLocale(language = "en", country = "EN")
+//    @DefaultLocale(language = "en", country = "EN")
     public void givenAnInvalidEmail_thenReturnErrorsWith422Code() {
 
-        NewUserRequest newUser = new NewUserRequest();
-        newUser.setUsername("username");
-        newUser.setEmail("email");
-        newUser.setPassword("user123");
+        NewUserRequest newUserRequest = new NewUserRequest();
+        newUserRequest.setUsername("username");
+        newUserRequest.setEmail("email");
+        newUserRequest.setPassword("user123");
 
-        NewUserRequestWrapper requestWrapper = new NewUserRequestWrapper();
-        requestWrapper.setUser(newUser);
+        NewUserRequestWrapper newUserRequestWrapper = new NewUserRequestWrapper(newUserRequest);
 
-        given()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(requestWrapper)
-                .when()
-                .post(USERS_RESOURCE_PATH)
-                .then()
-                .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
-                .body(
-                        "errors.body",
-                        hasSize(1),
-                        "errors.body",
-                        hasItems("must be a well-formed email address"));
+        given().contentType(MediaType.APPLICATION_JSON).body(newUserRequestWrapper).when().post(USERS_RESOURCE_PATH).then().statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY).body("errors.body", hasSize(1), "errors.body", hasItems("must be a well-formed email address"));
     }
 
     @Test
-    public void givenAInvalidLogin_whenExecuteLoginEndpoint_shouldReturnErrorsWith422Code()
-            throws JsonProcessingException {
+    public void givenAInvalidLogin_whenExecuteLoginEndpoint_shouldReturnErrorsWith422Code() {
 
         LoginRequest loginRequest = new LoginRequest();
+        LoginRequestWrapper loginRequestWrapper = new LoginRequestWrapper(loginRequest);
 
-        given()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(loginRequest)
-                .when()
-                .post(LOGIN_PATH)
-                .then()
-                .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
-                .body("errors.body", hasItems("email must be not blank", "password must be not blank"));
+        given().contentType(MediaType.APPLICATION_JSON).body(loginRequestWrapper).when().post(LOGIN_PATH).then().statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY).body("errors.body", hasItems("email must be not blank", "password must be not blank"));
     }
 
     @Test
-    public void givenAInvalidLoginEmail_whenExecuteLoginEndpoint_shouldReturnUnauthorized()
-            throws JsonProcessingException {
+    public void givenAInvalidLoginEmail_whenExecuteLoginEndpoint_shouldReturnUnauthorized() {
 
         String userPassword = "123";
 
@@ -179,19 +111,13 @@ public class UsersResourceIntegrationTest extends AbstractIntegrationTest {
         loginRequest.setEmail("user2@mail.com");
         loginRequest.setPassword(userPassword);
 
-        given()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(loginRequest)
-                .when()
-                .post(LOGIN_PATH)
-                .then()
-                .statusCode(HttpStatus.SC_UNAUTHORIZED)
-                .body("errors.body", hasItems("Unauthorized"));
+        LoginRequestWrapper loginRequestWrapper = new LoginRequestWrapper(loginRequest);
+
+        given().contentType(MediaType.APPLICATION_JSON).body(loginRequestWrapper).when().post(LOGIN_PATH).then().statusCode(HttpStatus.SC_UNAUTHORIZED).body("errors.body", hasItems("Unauthorized"));
     }
 
     @Test
-    public void givenAInvalidLoginPassword_whenExecuteLoginEndpoint_shouldReturnUnauthorized()
-            throws JsonProcessingException {
+    public void givenAInvalidLoginPassword_whenExecuteLoginEndpoint_shouldReturnUnauthorized() {
 
         final var user = createUserEntity("user1", "user1@mail.com", "123", "bio", "image");
 
@@ -199,13 +125,8 @@ public class UsersResourceIntegrationTest extends AbstractIntegrationTest {
         loginRequest.setEmail(user.getEmail());
         loginRequest.setPassword("145");
 
-        given()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(loginRequest)
-                .when()
-                .post(LOGIN_PATH)
-                .then()
-                .statusCode(HttpStatus.SC_UNAUTHORIZED)
-                .body("errors.body", hasItems("Unauthorized"));
+        LoginRequestWrapper loginRequestWrapper = new LoginRequestWrapper(loginRequest);
+
+        given().contentType(MediaType.APPLICATION_JSON).body(loginRequestWrapper).when().post(LOGIN_PATH).then().statusCode(HttpStatus.SC_UNAUTHORIZED).body("errors.body", hasItems("Unauthorized"));
     }
 }

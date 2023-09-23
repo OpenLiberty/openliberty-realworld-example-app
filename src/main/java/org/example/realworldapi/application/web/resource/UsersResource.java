@@ -59,7 +59,6 @@ public class UsersResource {
             LoginRequestWrapper loginRequest) throws JsonProcessingException {
         User user;
 
-        System.out.println("Request: " + loginRequest.toString());
         try {
             user = loginUser.handle(loginRequest.getUser().toLoginUserInput());
         } catch (UserNotFoundException | InvalidPasswordException ex) {

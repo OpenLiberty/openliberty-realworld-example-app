@@ -1,12 +1,9 @@
 package org.example.realworldapi.integration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpStatus;
 import org.example.realworldapi.AbstractIntegrationTest;
-import org.example.realworldapi.application.web.model.request.NewArticleRequest;
-import org.example.realworldapi.application.web.model.request.NewCommentRequest;
-import org.example.realworldapi.application.web.model.request.UpdateArticleRequest;
+import org.example.realworldapi.application.web.model.request.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -316,18 +313,19 @@ public class ArticlesResourceIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     public void
-    givenValidArticleRequestWithoutTags_whenExecuteCreateArticleEndpoint_shouldReturnACreatedArticle()
-            throws JsonProcessingException {
+    givenValidArticleRequestWithoutTags_whenExecuteCreateArticleEndpoint_shouldReturnACreatedArticle() {
 
         final var loggedUser =
                 createUserEntity("loggedUser", "loggeduser@mail.com", "bio", "image", "loggeduser123");
 
         NewArticleRequest newArticleRequest = createNewArticle("Title", "Description", "Body");
 
+        NewArticleRequestWrapper newArticleRequestWrapper = new NewArticleRequestWrapper(newArticleRequest);
+
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION_HEADER, AUTHORIZATION_HEADER_VALUE_PREFIX + token(loggedUser))
-                .body(newArticleRequest)
+                .body(newArticleRequestWrapper)
                 .post(ARTICLES_PATH)
                 .then()
                 .statusCode(HttpStatus.SC_CREATED)
@@ -358,8 +356,7 @@ public class ArticlesResourceIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     public void
-    givenValidArticleRequestWithTags_whenExecuteCreateArticleEndpoint_shouldReturnACreatedArticle()
-            throws JsonProcessingException {
+    givenValidArticleRequestWithTags_whenExecuteCreateArticleEndpoint_shouldReturnACreatedArticle() {
 
         final var loggedUser =
                 createUserEntity("loggedUser", "loggeduser@mail.com", "bio", "image", "loggeduser123");
@@ -373,10 +370,12 @@ public class ArticlesResourceIntegrationTest extends AbstractIntegrationTest {
                 createNewArticle(
                         "Title 1", "Description", "Body", tag1.getName(), tag2.getName(), tag3, tag4);
 
+        NewArticleRequestWrapper newArticleRequestWrapper = new NewArticleRequestWrapper(newArticleRequest);
+
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION_HEADER, AUTHORIZATION_HEADER_VALUE_PREFIX + token(loggedUser))
-                .body(newArticleRequest)
+                .body(newArticleRequestWrapper)
                 .post(ARTICLES_PATH)
                 .then()
                 .statusCode(HttpStatus.SC_CREATED)
@@ -431,8 +430,7 @@ public class ArticlesResourceIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     public void
-    givenExistentArticle_whenExecuteUpdateArticleEndpoint_shouldReturnUpdatedArticleWithStatusCode200()
-            throws JsonProcessingException {
+    givenExistentArticle_whenExecuteUpdateArticleEndpoint_shouldReturnUpdatedArticleWithStatusCode200() {
         final var loggedUser =
                 createUserEntity("loggedUser", "loggeduser@mail.com", "bio", "image", "loggeduser123");
         final var article = createArticleEntity(loggedUser, "Title", "Description", "Body");
@@ -442,10 +440,12 @@ public class ArticlesResourceIntegrationTest extends AbstractIntegrationTest {
         updateArticleRequest.setDescription("updated description");
         updateArticleRequest.setBody("updated body");
 
+        UpdateArticleRequestWrapper updateArticleRequestWrapper = new UpdateArticleRequestWrapper(updateArticleRequest);
+
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION_HEADER, AUTHORIZATION_HEADER_VALUE_PREFIX + token(loggedUser))
-                .body(updateArticleRequest)
+                .body(updateArticleRequestWrapper)
                 .pathParam("slug", article.getSlug())
                 .put(ARTICLES_PATH + "/{slug}")
                 .then()
@@ -517,8 +517,7 @@ public class ArticlesResourceIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     public void
-    givenExistentArticleWithoutComments_whenExecuteCreateCommentEndpoint_shouldReturnCommentWithStatusCode200()
-            throws JsonProcessingException {
+    givenExistentArticleWithoutComments_whenExecuteCreateCommentEndpoint_shouldReturnCommentWithStatusCode200() {
 
         final var loggedUser =
                 createUserEntity("loggedUser", "loggeduser@mail.com", "bio", "image", "loggeduser123");
@@ -527,11 +526,14 @@ public class ArticlesResourceIntegrationTest extends AbstractIntegrationTest {
         final var newCommentRequest = new NewCommentRequest();
         newCommentRequest.setBody("comment body");
 
+        NewCommentRequestWrapper newCommentRequestWrapper = new NewCommentRequestWrapper(newCommentRequest);
+
+
         given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION_HEADER, AUTHORIZATION_HEADER_VALUE_PREFIX + token(loggedUser))
                 .pathParam("slug", article.getSlug())
-                .body(newCommentRequest)
+                .body(newCommentRequestWrapper)
                 .post(ARTICLES_PATH + "/{slug}/comments")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
