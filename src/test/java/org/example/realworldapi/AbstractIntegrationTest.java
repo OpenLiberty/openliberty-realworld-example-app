@@ -5,7 +5,7 @@ import de.hamburger_software.util.junit.microprofile.config.MicroProfileConfigEx
 import io.restassured.RestAssured;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.example.realworldapi.infrastructure.provider.JwtTokenProvider;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.*;
+import org.example.realworldapi.infrastructure.repository.entity.*;
 import org.example.realworldapi.infrastructure.web.provider.TokenProvider;
 import org.example.realworldapi.util.UserEntityUtils;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;

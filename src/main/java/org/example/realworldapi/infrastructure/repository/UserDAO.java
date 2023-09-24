@@ -5,8 +5,8 @@ import jakarta.inject.Singleton;
 import jakarta.persistence.TypedQuery;
 import org.example.realworldapi.domain.model.user.User;
 import org.example.realworldapi.domain.model.user.UserRepository;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.EntityUtils;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.UserEntity;
+import org.example.realworldapi.infrastructure.repository.entity.EntityUtils;
+import org.example.realworldapi.infrastructure.repository.entity.UserEntity;
 
 import java.util.List;
 import java.util.Optional;

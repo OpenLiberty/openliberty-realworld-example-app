@@ -1,4 +1,4 @@
-package org.example.realworldapi.infrastructure.repository.hibernate.entity;
+package org.example.realworldapi.infrastructure.repository.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,11 +26,11 @@ public class FavoriteRelationshipEntity {
     @Embedded
     private FavoriteRelationshipEntityKey primaryKey;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(insertable = false, updatable = false)
     private ArticleEntity article;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(insertable = false, updatable = false)
     private UserEntity user;
 

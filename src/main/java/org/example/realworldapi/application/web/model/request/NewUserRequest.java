@@ -1,12 +1,14 @@
 package org.example.realworldapi.application.web.model.request;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.realworldapi.domain.model.constants.ValidationMessages;
 import org.example.realworldapi.domain.model.user.CreateUserInput;
 
 @Getter
 @Setter
+@NotNull(message = ValidationMessages.REQUEST_BODY_MUST_BE_NOT_NULL)
 public class NewUserRequest {
     private String username;
     private String email;

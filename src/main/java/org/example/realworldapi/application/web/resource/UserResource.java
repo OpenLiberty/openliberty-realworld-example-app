@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -15,7 +14,6 @@ import org.example.realworldapi.application.web.model.request.UpdateUserRequestW
 import org.example.realworldapi.application.web.model.response.UserResponse;
 import org.example.realworldapi.domain.feature.FindUserById;
 import org.example.realworldapi.domain.feature.UpdateUser;
-import org.example.realworldapi.domain.model.constants.ValidationMessages;
 import org.example.realworldapi.infrastructure.web.provider.TokenProvider;
 import org.example.realworldapi.infrastructure.web.security.annotation.Secured;
 import org.example.realworldapi.infrastructure.web.security.profile.Role;
@@ -51,8 +49,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(
             @Context SecurityContext securityContext,
-            @Valid @NotNull(message = ValidationMessages.REQUEST_BODY_MUST_BE_NOT_NULL)
-            UpdateUserRequestWrapper updateUserRequest) throws JsonProcessingException {
+            @Valid UpdateUserRequestWrapper updateUserRequest) throws JsonProcessingException {
         final var userId = UUID.fromString(securityContext.getUserPrincipal().getName());
         final var user = updateUser.handle(updateUserRequest.getUser().toUpdateUserInput(userId));
         final var token = tokenProvider.createUserToken(user.getId().toString());

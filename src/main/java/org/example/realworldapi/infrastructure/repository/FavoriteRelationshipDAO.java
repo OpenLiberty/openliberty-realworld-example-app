@@ -3,13 +3,12 @@ package org.example.realworldapi.infrastructure.repository;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.persistence.Query;
-import jakarta.transaction.Transactional;
 import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.article.FavoriteRelationship;
 import org.example.realworldapi.domain.model.article.FavoriteRelationshipRepository;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.EntityUtils;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.FavoriteRelationshipEntity;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.FavoriteRelationshipEntityKey;
+import org.example.realworldapi.infrastructure.repository.entity.EntityUtils;
+import org.example.realworldapi.infrastructure.repository.entity.FavoriteRelationshipEntity;
+import org.example.realworldapi.infrastructure.repository.entity.FavoriteRelationshipEntityKey;
 
 import java.util.List;
 import java.util.Optional;

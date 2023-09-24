@@ -6,10 +6,10 @@ import jakarta.persistence.Query;
 import org.example.realworldapi.domain.model.user.FollowRelationship;
 import org.example.realworldapi.domain.model.user.FollowRelationshipRepository;
 import org.example.realworldapi.domain.model.user.User;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.EntityUtils;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.FollowRelationshipEntity;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.FollowRelationshipEntityKey;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.UserEntity;
+import org.example.realworldapi.infrastructure.repository.entity.EntityUtils;
+import org.example.realworldapi.infrastructure.repository.entity.FollowRelationshipEntity;
+import org.example.realworldapi.infrastructure.repository.entity.FollowRelationshipEntityKey;
+import org.example.realworldapi.infrastructure.repository.entity.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,8 +67,8 @@ public class FollowRelationshipDAO extends AbstractDAO<FollowRelationshipEntity,
     }
 
     private FollowRelationship followingRelationship(FollowRelationshipEntity followRelationshipEntity) {
-        final var user = entityUtils.user(followRelationshipEntity.getUser());
-        final var followed = entityUtils.user(followRelationshipEntity.getFollowed());
+        final var user = entityUtils.user(followRelationshipEntity.getPrimaryKey().getUser());
+        final var followed = entityUtils.user(followRelationshipEntity.getPrimaryKey().getFollowed());
         return new FollowRelationship(user, followed);
     }
 

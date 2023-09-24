@@ -1,4 +1,4 @@
-package org.example.realworldapi.infrastructure.repository.hibernate.entity;
+package org.example.realworldapi.infrastructure.repository.entity;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -69,7 +69,7 @@ public class EntityUtils {
     public FavoriteRelationship favoriteRelationship(
             FavoriteRelationshipEntity favoriteRelationshipEntity) {
         return new FavoriteRelationship(
-                user(favoriteRelationshipEntity.getUser()),
-                article(favoriteRelationshipEntity.getArticle()));
+                user(favoriteRelationshipEntity.getPrimaryKey().getUser()),
+                article(favoriteRelationshipEntity.getPrimaryKey().getArticle()));
     }
 }

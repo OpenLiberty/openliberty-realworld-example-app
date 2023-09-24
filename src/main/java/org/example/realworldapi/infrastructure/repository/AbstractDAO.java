@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.example.realworldapi.domain.model.article.FavoriteRelationship;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.*;
+import org.example.realworldapi.infrastructure.repository.entity.*;
 
 import java.util.List;
 import java.util.UUID;

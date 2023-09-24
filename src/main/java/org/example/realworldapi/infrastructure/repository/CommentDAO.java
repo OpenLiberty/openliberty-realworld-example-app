@@ -3,12 +3,11 @@ package org.example.realworldapi.infrastructure.repository;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.comment.Comment;
 import org.example.realworldapi.domain.model.comment.CommentRepository;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.CommentEntity;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.EntityUtils;
+import org.example.realworldapi.infrastructure.repository.entity.CommentEntity;
+import org.example.realworldapi.infrastructure.repository.entity.EntityUtils;
 
 import java.util.List;
 import java.util.Optional;

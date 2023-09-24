@@ -1,10 +1,8 @@
-package org.example.realworldapi.infrastructure.repository.hibernate.entity;
+package org.example.realworldapi.infrastructure.repository.entity;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -12,15 +10,13 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Embeddable
-public class TagRelationshipEntityKey implements Serializable {
+public class FavoriteRelationshipEntityKey implements Serializable {
 
     @ManyToOne
     private ArticleEntity article;
     @ManyToOne
-    private TagEntity tag;
+    private UserEntity user;
 
     @Override
     public boolean equals(Object o) {
@@ -28,12 +24,12 @@ public class TagRelationshipEntityKey implements Serializable {
 
         if (o == null || getClass() != o.getClass()) return false;
 
-        TagRelationshipEntityKey that = (TagRelationshipEntityKey) o;
-        return Objects.equals(article, that.article) && Objects.equals(tag, that.tag);
+        FavoriteRelationshipEntityKey that = (FavoriteRelationshipEntityKey) o;
+        return Objects.equals(user, that.user) && Objects.equals(article, that.article);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(article, tag);
+        return Objects.hash(user, article);
     }
 }

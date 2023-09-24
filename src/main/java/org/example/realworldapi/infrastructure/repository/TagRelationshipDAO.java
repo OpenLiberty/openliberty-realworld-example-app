@@ -7,9 +7,9 @@ import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.article.TagRelationship;
 import org.example.realworldapi.domain.model.article.TagRelationshipRepository;
 import org.example.realworldapi.domain.model.tag.Tag;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.EntityUtils;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.TagRelationshipEntity;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.TagRelationshipEntityKey;
+import org.example.realworldapi.infrastructure.repository.entity.EntityUtils;
+import org.example.realworldapi.infrastructure.repository.entity.TagRelationshipEntity;
+import org.example.realworldapi.infrastructure.repository.entity.TagRelationshipEntityKey;
 
 import java.util.List;
 

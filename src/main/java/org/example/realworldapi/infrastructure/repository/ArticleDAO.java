@@ -8,8 +8,8 @@ import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.article.ArticleFilter;
 import org.example.realworldapi.domain.model.article.ArticleRepository;
 import org.example.realworldapi.domain.model.article.PageResult;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.ArticleEntity;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.EntityUtils;
+import org.example.realworldapi.infrastructure.repository.entity.ArticleEntity;
+import org.example.realworldapi.infrastructure.repository.entity.EntityUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,7 +1,7 @@
 package org.example.realworldapi.util;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import org.example.realworldapi.infrastructure.repository.hibernate.entity.UserEntity;
+import org.example.realworldapi.infrastructure.repository.entity.UserEntity;
 
 import java.util.UUID;
 

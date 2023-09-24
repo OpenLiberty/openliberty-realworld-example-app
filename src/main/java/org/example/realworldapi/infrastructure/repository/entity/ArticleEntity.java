@@ -1,4 +1,4 @@
-package org.example.realworldapi.infrastructure.repository.hibernate.entity;
+package org.example.realworldapi.infrastructure.repository.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -20,6 +20,7 @@ import org.example.realworldapi.domain.feature.*;
 import org.example.realworldapi.domain.model.article.ArticleFilter;
 import org.example.realworldapi.domain.model.comment.DeleteCommentInput;
 import org.example.realworldapi.domain.model.constants.ValidationMessages;
+import org.example.realworldapi.infrastructure.web.qualifiers.NoWrapRootValueObjectMapper;
 import org.example.realworldapi.infrastructure.web.security.annotation.Secured;
 import org.example.realworldapi.infrastructure.web.security.profile.Role;
 
@@ -55,6 +56,9 @@ public class ArticlesResource {
     private ResourceUtils resourceUtils;
     @Inject
     ObjectMapper objectMapper;
+    @Inject
+    @NoWrapRootValueObjectMapper
+    ObjectMapper noWrapObjectMapper;
 
 
     @GET
@@ -69,7 +73,7 @@ public class ArticlesResource {
         final var articlesFilter =
                 new ArticleFilter(offset, resourceUtils.getLimit(limit), loggedUserId, null, null, null);
         final var articlesPageResult = findMostRecentArticlesByFilter.handle(articlesFilter);
-        return Response.ok(resourceUtils.articlesResponse(articlesPageResult, loggedUserId))
+        return Response.ok(noWrapObjectMapper.writeValueAsString(resourceUtils.articlesResponse(articlesPageResult, loggedUserId)))
                 .status(Response.Status.OK)
                 .build();
     }
@@ -83,15 +87,13 @@ public class ArticlesResource {
             @QueryParam("tag") List<String> tags,
             @QueryParam("author") List<String> authors,
             @QueryParam("favorited") List<String> favorited,
-            @Context SecurityContext securityContext) {
+            @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         final var filter =
                 new ArticleFilter(
                         offset, resourceUtils.getLimit(limit), loggedUserId, tags, authors, favorited);
         final var articlesPageResult = findArticlesByFilter.handle(filter);
-        return Response.ok(
-
-                        resourceUtils.articlesResponse(articlesPageResult, loggedUserId))
+        return Response.ok(noWrapObjectMapper.writeValueAsString(resourceUtils.articlesResponse(articlesPageResult, loggedUserId)))
                 .status(Response.Status.OK)
                 .build();
     }
@@ -102,7 +104,7 @@ public class ArticlesResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(
-            @Valid @NotNull(message = ValidationMessages.REQUEST_BODY_MUST_BE_NOT_NULL)
+            @Valid
             NewArticleRequestWrapper newArticleRequest,
             @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
@@ -132,7 +134,7 @@ public class ArticlesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(
             @PathParam("slug") @NotBlank String slug,
-            @Valid @NotNull UpdateArticleRequestWrapper updateArticleRequest,
+            @Valid UpdateArticleRequestWrapper updateArticleRequest,
             @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         final var updatedArticle =
@@ -161,11 +163,10 @@ public class ArticlesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCommentsBySlug(
             @PathParam("slug") @NotBlank(message = ValidationMessages.SLUG_MUST_BE_NOT_BLANK) String slug,
-            @Context SecurityContext securityContext) {
+            @Context SecurityContext securityContext) throws JsonProcessingException {
         final var loggedUserId = resourceUtils.getLoggedUserId(securityContext);
         final var comments = findCommentsByArticleSlug.handle(slug);
-        return Response.ok(
-                        resourceUtils.commentsResponse(comments, loggedUserId))
+        return Response.ok(noWrapObjectMapper.writeValueAsString(resourceUtils.commentsResponse(comments, loggedUserId)))
                 .status(Response.Status.OK)
                 .build();
     }
