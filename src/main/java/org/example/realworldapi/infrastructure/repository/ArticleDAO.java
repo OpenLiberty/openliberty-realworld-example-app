@@ -169,24 +169,24 @@ public class ArticleDAO extends AbstractDAO<ArticleEntity, UUID> implements Arti
         List<String> favUpper = new ArrayList<>();
 
         if (isNotEmpty(tags)) {
-            tagsUpper = tags.stream().map(String::toUpperCase).toList();
+            tagsUpper = toUpperCase(tags);
         }
 
         if (isNotEmpty(authors)) {
-            authorsUpper = authors.stream().map(String::toUpperCase).toList();
+            authorsUpper = toUpperCase(authors);
         }
 
         if (isNotEmpty(favorited)) {
-            favUpper = favorited.stream().map(String::toUpperCase).toList();
+            favUpper = toUpperCase(favorited);
         }
 
         List<String> finalTagsUpper = tagsUpper;
         List<String> finalAuthorsUpper = authorsUpper;
         List<String> finalFavsUpper = favUpper;
-        findArticlesQueryBuilder.updateQueryStatementConditional(isNotEmpty(tags), "inner join a.tags t inner join t.primaryKey.tag as tag", "upper(tag.name) in :tags", () -> params.put("tags", finalTagsUpper));
+        findArticlesQueryBuilder.updateQueryStatementConditional(isNotEmpty(tags), "inner join a.tags t inner join t.tag as tag", "upper(tag.name) in :tags", () -> params.put("tags", finalTagsUpper));
 
         findArticlesQueryBuilder.updateQueryStatementConditional(isNotEmpty(authors), "inner join a.author as authors", "upper(authors.username) in :authors", () -> params.put("authors", finalAuthorsUpper));
 
-        findArticlesQueryBuilder.updateQueryStatementConditional(isNotEmpty(favorited), "inner join a.favorites as favorites inner join favorites.primaryKey.user as user", "upper(user.username) in :favorites", () -> params.put("favorites", finalFavsUpper));
+        findArticlesQueryBuilder.updateQueryStatementConditional(isNotEmpty(favorited), "inner join a.favorites as favorites inner join favorites.user as user", "upper(user.username) in :favorites", () -> params.put("favorites", finalFavsUpper));
     }
 }

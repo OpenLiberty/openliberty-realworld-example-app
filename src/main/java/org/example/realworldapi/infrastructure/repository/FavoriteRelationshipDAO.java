@@ -8,14 +8,13 @@ import org.example.realworldapi.domain.model.article.FavoriteRelationship;
 import org.example.realworldapi.domain.model.article.FavoriteRelationshipRepository;
 import org.example.realworldapi.infrastructure.repository.entity.EntityUtils;
 import org.example.realworldapi.infrastructure.repository.entity.FavoriteRelationshipEntity;
-import org.example.realworldapi.infrastructure.repository.entity.FavoriteRelationshipEntityKey;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Dependent
-public class FavoriteRelationshipDAO extends AbstractDAO<FavoriteRelationshipEntity, FavoriteRelationshipEntityKey> implements FavoriteRelationshipRepository {
+public class FavoriteRelationshipDAO extends AbstractDAO<FavoriteRelationshipEntity, Long> implements FavoriteRelationshipRepository {
 
     @Inject
     private EntityUtils entityUtils;

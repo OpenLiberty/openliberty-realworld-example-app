@@ -9,13 +9,12 @@ import org.example.realworldapi.domain.model.article.TagRelationshipRepository;
 import org.example.realworldapi.domain.model.tag.Tag;
 import org.example.realworldapi.infrastructure.repository.entity.EntityUtils;
 import org.example.realworldapi.infrastructure.repository.entity.TagRelationshipEntity;
-import org.example.realworldapi.infrastructure.repository.entity.TagRelationshipEntityKey;
 
 import java.util.List;
 
 @Dependent
 public class TagRelationshipDAO
-        extends AbstractDAO<TagRelationshipEntity, TagRelationshipEntityKey>
+        extends AbstractDAO<TagRelationshipEntity, Long>
         implements TagRelationshipRepository {
 
     @Inject
@@ -30,7 +29,7 @@ public class TagRelationshipDAO
 
     @Override
     public List<Tag> findArticleTags(Article article) {
-        String jpql = "SELECT t FROM TagRelationshipEntity t where t.primaryKey.article.id = :articleId";
+        String jpql = "SELECT t FROM TagRelationshipEntity t where t.article.id = :articleId";
         Query query = em.createQuery(jpql);
         query.setParameter("articleId", article.getId());
 

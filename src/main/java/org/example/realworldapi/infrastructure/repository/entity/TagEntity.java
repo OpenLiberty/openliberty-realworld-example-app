@@ -20,7 +20,7 @@ import java.util.UUID;
 public class TagEntity {
 
     @Id
-    @Column(unique = true, nullable = false, columnDefinition = "uuid")
+    @Column(columnDefinition = "uuid")
     private UUID id;
 
     private String name;

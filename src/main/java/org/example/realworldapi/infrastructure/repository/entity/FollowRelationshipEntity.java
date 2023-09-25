@@ -13,33 +13,26 @@ import java.util.Objects;
 @NoArgsConstructor
 @Table(name = "FOLLOW_RELATIONSHIP")
 @NamedQueries({
-        @NamedQuery(name = "FREisFollowing", query = "select f from FollowRelationshipEntity f where f.primaryKey.user.id = :currentUserId and f.primaryKey.followed.id = :followedUserId"),
-        @NamedQuery(name = "FRE.findByPrimaryKey_UserAndPrimaryKey_Followed", query = "select f from FollowRelationshipEntity f where f.primaryKey.user = :loggedUserEntity and f.primaryKey.followed = :followedUserEntity")
+        @NamedQuery(name = "FREisFollowing", query = "select f from FollowRelationshipEntity f where f.user.id = :currentUserId and f.followed.id = :followedUserId"),
+        @NamedQuery(name = "FRE.findByPrimaryKey_UserAndPrimaryKey_Followed", query = "select f from FollowRelationshipEntity f where f.user = :loggedUserEntity and f.followed = :followedUserEntity")
 })
 public class FollowRelationshipEntity {
-
-//    SELECT f FROM FollowRelationshipEntity f " + "WHERE f.primaryKey.loggedUser = :loggedUserEntity " + "AND f.primaryKey.followedUser = :followedUserEntity
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    private FollowRelationshipEntityKey primaryKey;
-
     @ManyToOne
-    @JoinColumn(insertable = false, updatable = false)
+    @JoinColumn(updatable = false)
     private UserEntity user;
 
     @ManyToOne
-    @JoinColumn(insertable = false, updatable = false)
+    @JoinColumn(updatable = false)
     private UserEntity followed;
 
     public FollowRelationshipEntity(UserEntity user, UserEntity followed) {
-        final var usersFollowedEntityKey = new FollowRelationshipEntityKey();
-        usersFollowedEntityKey.setUser(user);
-        usersFollowedEntityKey.setFollowed(followed);
-        this.primaryKey = usersFollowedEntityKey;
+        this.followed = followed;
+        this.user = user;
     }
 
     @Override
@@ -49,11 +42,11 @@ public class FollowRelationshipEntity {
         if (o == null || getClass() != o.getClass()) return false;
 
         FollowRelationshipEntity that = (FollowRelationshipEntity) o;
-        return Objects.equals(primaryKey, that.primaryKey);
+        return Objects.equals(user, that.user) && Objects.equals(followed, that.followed);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(primaryKey);
+        return Objects.hash(user, followed);
     }
 }

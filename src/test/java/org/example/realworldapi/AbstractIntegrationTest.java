@@ -59,12 +59,9 @@ public class AbstractIntegrationTest extends DatabaseIntegrationTest {
                     final var user = entityManager.find(UserEntity.class, currentUser.getId());
 
                     for (UserEntity follower : followers) {
-                        FollowRelationshipEntityKey key = new FollowRelationshipEntityKey();
-                        key.setUser(user);
-                        key.setFollowed(follower);
-
                         FollowRelationshipEntity followRelationshipEntity = new FollowRelationshipEntity();
-                        followRelationshipEntity.setPrimaryKey(key);
+                        followRelationshipEntity.setFollowed(follower);
+                        followRelationshipEntity.setUser(user);
                         entityManager.persist(followRelationshipEntity);
                     }
 
@@ -96,12 +93,9 @@ public class AbstractIntegrationTest extends DatabaseIntegrationTest {
                         for (TagEntity tag : tags) {
                             final var managedTag = entityManager.find(TagEntity.class, tag.getId());
 
-                            final var articlesTagsEntityKey = new TagRelationshipEntityKey();
-                            articlesTagsEntityKey.setArticle(managedArticle);
-                            articlesTagsEntityKey.setTag(managedTag);
-
                             final var articlesTagsEntity = new TagRelationshipEntity();
-                            articlesTagsEntity.setPrimaryKey(articlesTagsEntityKey);
+                            articlesTagsEntity.setArticle(managedArticle);
+                            articlesTagsEntity.setTag(managedTag);
 
                             entityManager.persist(articlesTagsEntity);
                             resultList.add(articlesTagsEntity);
@@ -176,17 +170,9 @@ public class AbstractIntegrationTest extends DatabaseIntegrationTest {
 
     private FavoriteRelationshipEntity favoriteRelationshipEntity(
             ArticleEntity article, UserEntity loggedUser) {
-        final var favoriteRelationshipEntityKey = favoriteRelationshipEntityKey(article, loggedUser);
         final var favoriteRelationshipEntity = new FavoriteRelationshipEntity();
-        favoriteRelationshipEntity.setPrimaryKey(favoriteRelationshipEntityKey);
+        favoriteRelationshipEntity.setUser(loggedUser);
+        favoriteRelationshipEntity.setArticle(article);
         return favoriteRelationshipEntity;
-    }
-
-    private FavoriteRelationshipEntityKey favoriteRelationshipEntityKey(
-            ArticleEntity article, UserEntity loggedUser) {
-        final var favoriteRelationshipEntityKey = new FavoriteRelationshipEntityKey();
-        favoriteRelationshipEntityKey.setArticle(article);
-        favoriteRelationshipEntityKey.setUser(loggedUser);
-        return favoriteRelationshipEntityKey;
     }
 }

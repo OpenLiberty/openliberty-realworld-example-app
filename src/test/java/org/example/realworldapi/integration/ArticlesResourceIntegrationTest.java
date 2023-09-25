@@ -4,10 +4,12 @@ import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpStatus;
 import org.example.realworldapi.AbstractIntegrationTest;
 import org.example.realworldapi.application.web.model.request.*;
+import org.example.realworldapi.infrastructure.repository.entity.ArticleEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.example.realworldapi.constants.TestConstants.*;
@@ -471,6 +473,33 @@ public class ArticlesResourceIntegrationTest extends AbstractIntegrationTest {
         final var loggedUser =
                 createUserEntity("loggedUser", "loggeduser@mail.com", "bio", "image", "loggeduser123");
         final var article = createArticleEntity(loggedUser, "Title", "Description", "Body");
+
+        given()
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION_HEADER, AUTHORIZATION_HEADER_VALUE_PREFIX + token(loggedUser))
+                .pathParam("slug", article.getSlug())
+                .delete(ARTICLES_PATH + "/{slug}")
+                .then()
+                .statusCode(HttpStatus.SC_OK);
+
+        Assertions.assertNull(findArticleEntityById(article.getId()));
+    }
+
+    @Test
+    public void givenExistentArticle_whenExecuteDeleteArticlWithCommentsEndpoint_shouldReturnStatusCode200() {
+        final var loggedUser =
+                createUserEntity("loggedUser", "loggeduser@mail.com", "bio", "image", "loggeduser123");
+        final var article = createArticleEntity(loggedUser, "Title", "Description", "Body");
+//        article.setTags();
+
+
+        final var tag2 = createTagEntity("Tag 2");
+        final var tag3 = createTagEntity("Tag 3");
+
+        List<ArticleEntity> a = List.of(article);
+
+        createArticlesTags(a, tag2);
+//        createArticlesTags(a, tag3);
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)

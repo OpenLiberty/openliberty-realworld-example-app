@@ -23,22 +23,17 @@ public class FavoriteRelationshipEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    private FavoriteRelationshipEntityKey primaryKey;
-
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(insertable = false, updatable = false)
+    @JoinColumn(updatable = false)
     private ArticleEntity article;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(insertable = false, updatable = false)
+    @JoinColumn(updatable = false)
     private UserEntity user;
 
     public FavoriteRelationshipEntity(UserEntity user, ArticleEntity article) {
-        final var favoriteRelationshipEntityKey = new FavoriteRelationshipEntityKey();
-        favoriteRelationshipEntityKey.setUser(user);
-        favoriteRelationshipEntityKey.setArticle(article);
-        this.primaryKey = favoriteRelationshipEntityKey;
+        this.user = user;
+        this.article = article;
     }
 
     @Override
@@ -48,11 +43,11 @@ public class FavoriteRelationshipEntity {
         if (o == null || getClass() != o.getClass()) return false;
 
         FavoriteRelationshipEntity that = (FavoriteRelationshipEntity) o;
-        return Objects.equals(primaryKey, that.primaryKey);
+        return Objects.equals(user, that.user) && Objects.equals(article, that.article);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(primaryKey);
+        return Objects.hash(user, article);
     }
 }

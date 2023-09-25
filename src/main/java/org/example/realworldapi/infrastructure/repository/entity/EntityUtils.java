@@ -41,7 +41,7 @@ public class EntityUtils {
     }
 
     public Tag tag(TagRelationshipEntity tagRelationshipEntity) {
-        return tag(tagRelationshipEntity.getPrimaryKey().getTag());
+        return tag(tagRelationshipEntity.getTag());
     }
 
     public Article article(ArticleEntity articleEntity) {
@@ -69,7 +69,7 @@ public class EntityUtils {
     public FavoriteRelationship favoriteRelationship(
             FavoriteRelationshipEntity favoriteRelationshipEntity) {
         return new FavoriteRelationship(
-                user(favoriteRelationshipEntity.getPrimaryKey().getUser()),
-                article(favoriteRelationshipEntity.getPrimaryKey().getArticle()));
+                user(favoriteRelationshipEntity.getUser()),
+                article(favoriteRelationshipEntity.getArticle()));
     }
 }
