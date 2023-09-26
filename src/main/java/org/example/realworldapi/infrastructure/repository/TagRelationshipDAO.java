@@ -29,15 +29,25 @@ public class TagRelationshipDAO
 
     @Override
     public List<Tag> findArticleTags(Article article) {
+        return findTagRelationshipEntities(article).stream().map(entityUtils::tag).toList();
+    }
+
+    @Override
+    public List<TagRelationship> findTagRelationships(Article article) {
+        return findTagRelationshipEntities(article).stream().map(entityUtils::tagRelationship).toList();
+    }
+
+    @Override
+    public void delete(Article article) {
+        List<TagRelationshipEntity> tagRelationshipEntities = findTagRelationshipEntities(article);
+        tagRelationshipEntities.forEach(a -> em.remove(a));
+    }
+
+    public List<TagRelationshipEntity> findTagRelationshipEntities(Article article) {
         String jpql = "SELECT t FROM TagRelationshipEntity t where t.article.id = :articleId";
         Query query = em.createQuery(jpql);
         query.setParameter("articleId", article.getId());
 
-        List<TagRelationshipEntity> tagEntities = query.getResultList();
-
-        // Map the results to Article objects
-        return tagEntities.stream()
-                .map(entityUtils::tag)
-                .toList();
+        return query.getResultList();
     }
 }

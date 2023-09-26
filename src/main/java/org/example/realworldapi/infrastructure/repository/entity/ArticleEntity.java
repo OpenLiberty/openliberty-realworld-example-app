@@ -25,7 +25,7 @@ import java.util.UUID;
 public class ArticleEntity {
 
     @Id
-    @Column(unique = true, nullable = false, columnDefinition = "uuid")
+    @Column(nullable = false)
     private UUID id;
 
     private String slug;
@@ -41,13 +41,13 @@ public class ArticleEntity {
     @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
     private UserEntity author;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
     private List<CommentEntity> comments;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
     private List<TagRelationshipEntity> tags;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
     private List<FavoriteRelationshipEntity> favorites;
 
     public ArticleEntity(Article article, UserEntity author) {

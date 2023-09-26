@@ -6,6 +6,7 @@ import jakarta.inject.Named;
 import org.example.realworldapi.domain.model.article.Article;
 import org.example.realworldapi.domain.model.article.ArticleModelBuilder;
 import org.example.realworldapi.domain.model.article.FavoriteRelationship;
+import org.example.realworldapi.domain.model.article.TagRelationship;
 import org.example.realworldapi.domain.model.comment.Comment;
 import org.example.realworldapi.domain.model.comment.CommentBuilder;
 import org.example.realworldapi.domain.model.tag.Tag;
@@ -42,6 +43,10 @@ public class EntityUtils {
 
     public Tag tag(TagRelationshipEntity tagRelationshipEntity) {
         return tag(tagRelationshipEntity.getTag());
+    }
+
+    public TagRelationship tagRelationship(TagRelationshipEntity tagRelationshipEntity) {
+        return new TagRelationship(article(tagRelationshipEntity.getArticle()), tag(tagRelationshipEntity.getTag()));
     }
 
     public Article article(ArticleEntity articleEntity) {

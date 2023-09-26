@@ -34,7 +34,7 @@ public class TagDAO extends AbstractDAO<TagEntity, UUID>
     public Optional<Tag> findByName(String name) {
         String jpql = "SELECT t FROM TagEntity t WHERE UPPER(t.name) = :name";
         TypedQuery<TagEntity> query = em.createQuery(jpql, TagEntity.class);
-        query.setParameter("upper(name)", name.toUpperCase().trim());
+        query.setParameter("name", name.toUpperCase().trim());
 
         List<TagEntity> resultList = query.getResultList();
         if (!resultList.isEmpty()) {
@@ -54,10 +54,7 @@ public class TagDAO extends AbstractDAO<TagEntity, UUID>
     public List<Tag> findByNames(List<String> names) {
 
         Query query = em.createNamedQuery("TagEntity.findByNamesIgnoreCase");
-        List<String> namesUpper = names.stream()
-                .map(String::toUpperCase)
-                .collect(Collectors.toList());
-        query.setParameter("names", namesUpper);
+        query.setParameter("names", toUpperCase(names));
 
         List<TagEntity> resultList = query.getResultList();
         return resultList.stream().map(entityUtils::tag).collect(Collectors.toList());
