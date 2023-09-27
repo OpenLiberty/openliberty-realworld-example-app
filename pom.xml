@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>net.wasdev.wlp.maven.parent</groupId>
-        <artifactId>liberty-maven-app-parent</artifactId>
-        <version>2.7</version>
-        <relativePath/>
-    </parent>
 
     <properties>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.source>17</maven.compiler.source>
-        <testServerHttpPort>9080</testServerHttpPort>
-        <testServerHttpsPort>9443</testServerHttpsPort>
-        <warContext>realworld</warContext>
-        <packaging.type>usr</packaging.type>
     </properties>
 
     <groupId>projects</groupId>
@@ -26,41 +15,42 @@
 
     <dependencies>
         <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>10.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.microprofile</groupId>
             <artifactId>microprofile</artifactId>
-            <version>3.0</version>
-            <scope>provided</scope>
+            <version>6.0</version>
             <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>io.openliberty.features</groupId>
-            <artifactId>ejbLite-3.2</artifactId>
-            <version>20.0.0.12</version>
-            <type>esa</type>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>io.openliberty.features</groupId>
-            <artifactId>jwt-1.0</artifactId>
-            <version>20.0.0.4</version>
-            <type>esa</type>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.13.0</version>
         </dependency>
         <dependency>
-            <groupId>io.openliberty.features</groupId>
-            <artifactId>com.ibm.websphere.appserver.javax.persistence-2.2</artifactId>
-            <version>20.0.0.12</version>
-            <type>esa</type>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.3.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.1.Final</version>
         </dependency>
         <dependency>
             <groupId>com.github.slugify</groupId>
             <artifactId>slugify</artifactId>
-            <version>2.4</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <version>2.0.1</version>
-            <scope>provided</scope>
+            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
@@ -68,71 +58,58 @@
             <version>20230618</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>javax.persistence</artifactId>
-            <version>2.2.1</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.28</version>
+            <scope>provided</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.derby/derby -->
         <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>10.14.2.0</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.15.2</version>
+        </dependency>
+        <dependency>
+            <groupId>at.favre.lib</groupId>
+            <artifactId>bcrypt</artifactId>
+            <version>0.10.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.10.2</version>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>5.3.2</version>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.media/jersey-media-json-jackson -->
         <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jackson</artifactId>
-            <version>2.30.1</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.test-framework.providers</groupId>
-            <artifactId>jersey-test-framework-provider-jdk-http</artifactId>
-            <version>2.30.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-common</artifactId>
-            <version>3.1.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>3.1.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.inject</groupId>
-            <artifactId>jersey-hk2</artifactId>
-            <version>2.30.1</version>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-junit5</artifactId>
+            <version>4.0.0.Final</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
-        <plugins>        
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.10</version>
-                <executions>
-                    <execution>
-                        <id>copy-derby-dependency</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>derby</includeArtifactIds>
-                            <outputDirectory>${project.build.directory}/liberty/wlp/usr/shared/resources/</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -147,7 +124,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M1</version>
+                <version>3.1.2</version>
                 <executions>
                     <execution>
                         <phase>test</phase>
@@ -162,31 +139,26 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>net.wasdev.wlp.maven.plugins</groupId>
+                <groupId>io.openliberty.tools</groupId>
                 <artifactId>liberty-maven-plugin</artifactId>
-                <version>2.7</version>
+                <version>3.8.2</version>
                 <configuration>
-                    <assemblyArtifact>
-                        <groupId>io.openliberty</groupId>
-                        <artifactId>openliberty-runtime</artifactId>
-                        <version>20.0.0.4</version>
-                        <type>zip</type>
-                    </assemblyArtifact>
-                    <configFile>src/main/liberty/config/server.xml</configFile>
-                    <include>${packaging.type}</include>
-                    <bootstrapProperties>
-                        <appContext>${warContext}</appContext>
-                        <default.http.port>${testServerHttpPort}</default.http.port>
-                        <default.https.port>${testServerHttpsPort}</default.https.port>
-                        <appLocation>${project.artifactId}-${project.version}.war</appLocation>
-                    </bootstrapProperties>
+                    <copyDependencies>
+                        <dependencyGroup>
+                            <location>${project.build.directory}/liberty/wlp/usr/shared/resources</location>
+                            <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>42.6.0</version>
+                            </dependency>
+                        </dependencyGroup>
+                    </copyDependencies>
                 </configuration>
             </plugin>
-            <!-- Plugin to run functional tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M1</version>
+                <version>3.1.2</version>
                 <executions>
                     <execution>
                         <phase>integration-test</phase>
@@ -194,11 +166,6 @@
                         <goals>
                             <goal>integration-test</goal>
                         </goals>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <backend.http.port>${backend.service.http.port}</backend.http.port>
-                            </systemPropertyVariables>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>verify-results</id>

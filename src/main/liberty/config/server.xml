@@ -1,35 +1,39 @@
 <server description="Sample Liberty server">
+    <variable name="POSTGRESQL_HOSTNAME" defaultValue="localhost"/>
+    <variable name="POSTGRESQL_PORT" defaultValue="5432"/>
 
     <featureManager>
-        <feature>microProfile-3.0</feature>
-        <feature>jpa-2.2</feature>
+        <feature>beanValidation-3.0</feature>
+        <feature>jsonb-3.0</feature>
+        <feature>persistence-3.1</feature>
+        <feature>restfulWS-3.1</feature>
+        <feature>jdbc-4.3</feature>
+        <feature>mpJwt-2.1</feature>
+        <feature>mpConfig-3.0</feature>
     </featureManager>
 
-    <httpEndpoint httpPort="${default.http.port}" httpsPort="${default.https.port}"
+    <httpEndpoint httpPort="9080" httpsPort="9443"
                   id="defaultHttpEndpoint" host="*"/>
-    
-    <application name="RealWorld" location="${appLocation}" type="war" context-root="/">
+
+    <application name="RealWorld" location="realworld-liberty-1.0-SNAPSHOT.war" type="war" context-root="/">
     </application>
-      
-    <!-- Derby Library Configuration -->
-    <library id="derbyJDBCLib">
-        <fileset dir="${shared.resource.dir}" includes="derby*.jar" />
+
+    <library id="postgresqlLib">
+        <fileset dir="${shared.resource.dir}" includes="postgresql*.jar"/>
     </library>
 
-    <!-- Datasource Configuration -->
-    <dataSource id="RealWorldSource" 
-                jndiName="jdbc/RealWorldSource">
-        <jdbcDriver libraryRef="derbyJDBCLib" />
-        <properties.derby.embedded databaseName="UserDB" createDatabase="create" />
+    <dataSource id="DefaultDataSource" jndiName="jdbc/RealWorldSource">
+        <jdbcDriver libraryRef="postgresqlLib"/>
+        <properties.postgresql serverName="${POSTGRESQL_HOSTNAME}" portNumber="${POSTGRESQL_PORT}"
+                               databaseName="postgres_db" user="postgres_user" password="S3cret"/>
     </dataSource>
 
     <cors domain="/api"
-        allowedOrigins="http://localhost:4100"
-        allowedMethods="GET, POST, PUT"
-        allowedHeaders="*"
-        allowCredentials="true"
-        maxAge="3600" />
+          allowedOrigins="http://localhost:4100"
+          allowedMethods="GET, POST, PUT"
+          allowedHeaders="*"
+          allowCredentials="true"
+          maxAge="3600"/>
 
-    <!-- MP JWT configuration -->
-    <mpJwt id="jwtHandler" issuer="https://192.168.1.15:9443/jwt/defaultJWT" authorizationHeaderScheme="Token "/>
+    <mpJwt id="jwtHandler" issuer="users-service" authorizationHeaderScheme="Token "/>
 </server>

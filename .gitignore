@@ -20,3 +20,6 @@ Thumbs.db
 target/
 /openliberty-realworld-example-app.iml
 /realworld-liberty.iml
+
+src/test/java/org/example/realworldapi/Scratches.java
+/.jpb/jpb-settings.xml
