@@ -490,16 +490,17 @@ public class ArticlesResourceIntegrationTest extends AbstractIntegrationTest {
         final var loggedUser =
                 createUserEntity("loggedUser", "loggeduser@mail.com", "bio", "image", "loggeduser123");
         final var article = createArticleEntity(loggedUser, "Title", "Description", "Body");
-//        article.setTags();
-
+        final var article2 = createArticleEntity(loggedUser, "Title", "Description", "Body");
 
         final var tag2 = createTagEntity("Tag 2");
         final var tag3 = createTagEntity("Tag 3");
 
         List<ArticleEntity> a = List.of(article);
+        List<ArticleEntity> b = List.of(article2);
 
         createArticlesTags(a, tag2);
-//        createArticlesTags(a, tag3);
+        createArticlesTags(b, tag2);
+        createArticlesTags(a, tag3);
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)

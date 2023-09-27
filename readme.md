@@ -12,6 +12,9 @@ the [RealWorld](https://github.com/gothinkster/realworld) repo.
 
 # Getting started
 
+This codebase uses a PostgreSQL database to persist its data. Use the provided docker-compose.yaml to start the required
+DB.
+
 You will need Java as a prerequisite and our current build tool of choice is Maven.
 
 * Clone this repo

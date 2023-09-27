@@ -166,11 +166,6 @@
                         <goals>
                             <goal>integration-test</goal>
                         </goals>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <backend.http.port>${backend.service.http.port}</backend.http.port>
-                            </systemPropertyVariables>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>verify-results</id>

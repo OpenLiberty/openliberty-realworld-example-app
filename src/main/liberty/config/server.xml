@@ -35,6 +35,5 @@
           allowCredentials="true"
           maxAge="3600"/>
 
-    <!-- MP JWT configuration -->
     <mpJwt id="jwtHandler" issuer="users-service" authorizationHeaderScheme="Token "/>
 </server>

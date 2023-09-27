@@ -22,8 +22,7 @@ public class TagRelationshipEntity {
     @JoinColumn(updatable = false)
     private ArticleEntity article;
 
-    //TODO test this thouroughley!
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(updatable = false)
     private TagEntity tag;
 

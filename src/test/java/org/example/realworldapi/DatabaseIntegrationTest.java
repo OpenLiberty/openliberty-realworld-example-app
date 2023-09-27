@@ -85,7 +85,6 @@ public class DatabaseIntegrationTest {
         return jdbcDataSource;
     }
 
-    //    TODO able to use standard reflection for this?
     private static void configEntityClasses(Configuration configuration, String packageToScan) {
         Reflections reflections = new Reflections(packageToScan);
         reflections
