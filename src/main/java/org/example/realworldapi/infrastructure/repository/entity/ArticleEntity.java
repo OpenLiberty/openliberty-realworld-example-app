@@ -25,7 +25,7 @@ import java.util.UUID;
 public class ArticleEntity {
 
     @Id
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "uuid")
     private UUID id;
 
     private String slug;

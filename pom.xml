@@ -102,12 +102,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>de.hamburger-software.util</groupId>
-            <artifactId>junit-microprofile-config-extension</artifactId>
-            <version>1.0.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-junit5</artifactId>
             <version>4.0.0.Final</version>

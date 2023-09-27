@@ -20,11 +20,12 @@ import java.util.UUID;
 public class TagEntity {
 
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
 
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tag", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tag")
     private List<TagRelationshipEntity> articlesTags;
 
     public TagEntity(Tag tag) {

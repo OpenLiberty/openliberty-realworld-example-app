@@ -23,7 +23,7 @@ import java.util.UUID;
 public class CommentEntity {
 
     @Id
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "uuid")
     private UUID id;
 
     @CreationTimestamp

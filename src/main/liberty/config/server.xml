@@ -18,7 +18,6 @@
     <application name="RealWorld" location="realworld-liberty-1.0-SNAPSHOT.war" type="war" context-root="/">
     </application>
 
-    <!-- PostgreSQL Library Configuration -->
     <library id="postgresqlLib">
         <fileset dir="${shared.resource.dir}" includes="postgresql*.jar"/>
     </library>
@@ -37,5 +36,5 @@
           maxAge="3600"/>
 
     <!-- MP JWT configuration -->
-    <mpJwt id="jwtHandler" issuer="https://192.168.1.15:9443/jwt/defaultJWT" authorizationHeaderScheme="Token "/>
+    <mpJwt id="jwtHandler" issuer="users-service" authorizationHeaderScheme="Token "/>
 </server>
