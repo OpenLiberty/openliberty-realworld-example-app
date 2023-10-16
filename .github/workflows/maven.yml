@@ -26,25 +26,25 @@ jobs:
           POSTGRES_PASSWORD=S3cret
           POSTGRES_USER=postgres_user
           POSTGRES_DB=postgres_db
-  steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Set up node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20
-    - name: Run OpenLiberty DevMode
-      run: mvn liberty:dev
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-    - name: Run integration tests
-      run: ./utility/run-api-tests.sh
-      shell: bash
-    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
-    - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Run OpenLiberty DevMode
+        run: mvn liberty:dev
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+      - name: Run integration tests
+        run: ./utility/run-api-tests.sh
+        shell: bash
+      # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+      - name: Update dependency graph
+        uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
