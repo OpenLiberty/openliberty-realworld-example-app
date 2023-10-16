@@ -23,9 +23,9 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_PASSWORD=S3cret
-          POSTGRES_USER=postgres_user
-          POSTGRES_DB=postgres_db
+          POSTGRES_PASSWORD: S3cret
+          POSTGRES_USER: postgres_user
+          POSTGRES_DB: postgres_db
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
