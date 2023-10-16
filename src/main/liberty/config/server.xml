@@ -1,6 +1,9 @@
 <server description="Sample Liberty server">
     <variable name="POSTGRESQL_HOSTNAME" defaultValue="localhost"/>
     <variable name="POSTGRESQL_PORT" defaultValue="5432"/>
+    <variable name="POSTGRESQL_DBNAME" defaultValue="postgres_db"/>
+    <variable name="POSTGRESQL_USER" defaultValue="postgres_user"/>
+    <variable name="POSTGRESQL_PW" defaultValue="S3cret"/>
 
     <featureManager>
         <feature>beanValidation-3.0</feature>
@@ -25,7 +28,8 @@
     <dataSource id="DefaultDataSource" jndiName="jdbc/RealWorldSource">
         <jdbcDriver libraryRef="postgresqlLib"/>
         <properties.postgresql serverName="${POSTGRESQL_HOSTNAME}" portNumber="${POSTGRESQL_PORT}"
-                               databaseName="postgres_db" user="postgres_user" password="S3cret"/>
+                               databaseName="${POSTGRESQL_DBNAME}" user="${POSTGRESQL_USER}"
+                               password="${POSTGRESQL_PW}"/>
     </dataSource>
 
     <cors domain="/api"
